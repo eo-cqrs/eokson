@@ -21,10 +21,9 @@ Project architect: [@h1alexbel](https://github.com/h1alexbel)
 
 EOkson - Elegant, Object-Oriented JSON Transformations.
 
-**Motivation**. We are not happy dealing with JSON in Java.
-Mostly because its procedural nature, Jackson implementation.
-We offer everything through simple, declarative objects.
+**Motivation**. We are not happy dealing with JSON in procedural way.
 <br>
+We offer everything through simple, declarative objects.
 
 **Principles**. These are the [design principles](https://www.elegantobjects.org/#principles) behind EOkson.
 
@@ -109,7 +108,7 @@ Json json = new MutableJson().with(
     )
   .with("stormy", true)
   );
-  System.out.println(new SmartJson(json).pretty());
+System.out.println(new SmartJson(json).pretty());
 ```
 
 The code above would print this:
