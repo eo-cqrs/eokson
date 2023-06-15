@@ -212,6 +212,7 @@ SOFTWARE.
           <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
+      <!--      @todo #6:45m/DEV enable jtcop-->
       <!--      <plugin>-->
       <!--        <groupId>com.github.volodya-lombrozo</groupId>-->
       <!--        <artifactId>jtcop-maven-plugin</artifactId>-->
@@ -224,6 +225,7 @@ SOFTWARE.
       <!--          </execution>-->
       <!--        </executions>-->
       <!--      </plugin>-->
+      <!--      @todo #6:20m/DEV enable sa-tan-->
       <!--      <plugin>-->
       <!--        <groupId>ru.l3r8y</groupId>-->
       <!--        <artifactId>sa-tan</artifactId>-->
