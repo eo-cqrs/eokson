@@ -24,11 +24,6 @@ SOFTWARE.
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.jcabi</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.66.0</version>
-  </parent>
   <groupId>io.github.eo-cqrs</groupId>
   <artifactId>eokson</artifactId>
   <version>1.0-SNAPSHOT</version>
@@ -36,6 +31,7 @@ SOFTWARE.
   <description>
     Elegant, Object-Oriented JSON Transformations
   </description>
+  <url>https://github.com/eo-cqrs/eokson</url>
   <inceptionYear>2023</inceptionYear>
   <developers>
     <developer>
