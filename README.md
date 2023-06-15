@@ -50,16 +50,16 @@ dependencies {
 
 ```java
 // From String:
-String jsonAsString="{\"nymph\": \"nereid\"}";
-  Json json=new Json.Of(jsonAsString);
+String jsonAsString = "{\"nymph\": \"nereid\"}";
+  Json json = new Json.Of(jsonAsString);
 
 // From InputStream:
-  InputStream stream=new ByteArrayInputStream(jsonAsString.getBytes());
-  json=new Json.Of(stream);
+  InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes());
+  json = new Json.Of(stream);
 
 // From Jackson's JsonNode:
-  JsonNode node=new ObjectMapper().readTree(jsonAsString);
-  json=new Json.Of(node);
+  JsonNode node = new ObjectMapper().readTree(jsonAsString);
+  json = new Json.Of(node);
 ```
 
 ### SmartJson
@@ -69,22 +69,22 @@ the [Smart Object pattern](https://www.yegor256.com/2016/04/26/why-inputstream-d
 
 ```java
 // Convert it to String:
-String textual=new SmartJson(json).textual();
+String textual = new SmartJson(json).textual();
 
 // Convert it to pretty formatted String:
-  String pretty=new SmartJson(json).pretty();
+  String pretty = new SmartJson(json).pretty();
 
 // Convert it to byte array:
-  byte[]bytes=new SmartJson(json).byteArray();
+  byte[] bytes = new SmartJson(json).byteArray();
 
 // Get a String field value:
-  Optional<String> leaf=new SmartJson(json).leaf("nymph");
+  Optional<String> leaf = new SmartJson(json).leaf("nymph");
 
 // Get a deeply nested Json:
-  SmartJson nested=new SmartJson(json).at("/path/to/nested/json");
+  SmartJson nested = new SmartJson(json).at("/path/to/nested/json");
 
 // Get a deeply nested int:
-  int nestedInt=new SmartJson(json).at("/path/to/nested/int");
+  int nestedInt = new SmartJson(json).at("/path/to/nested/int");
 ```
 
 ### MutableJson
@@ -94,20 +94,20 @@ that below), if you need to quickly assemble a `Json` by hand, `MutableJson` can
 declarative notation.
 
 ```java
-Json json=new MutableJson().with(
+Json json = new MutableJson().with(
   "ocean",
   new MutableJson().with(
   "nereid1",
   new MutableJson()
-  .with("name","Thetis")
-  .with("hair","black")
+  .with("name", "Thetis")
+  .with("hair", "black")
   ).with(
   "nereid2",
   new MutableJson()
-  .with("name","Actaea")
-  .with("hair","blonde")
+  .with("name", "Actaea")
+  .with("hair", "blonde")
   )
-  .with("stormy",true)
+  .with("stormy", true)
   );
   System.out.println(new SmartJson(json).pretty());
 ```
@@ -185,7 +185,7 @@ We can then make an HTTP response directly, e.g. with [Spring](https://spring.io
 ```java         
 return new ResponseEntity<>(
   new SmartJson(
-  new BankAccount(iban,nickname,transactions)
+  new BankAccount(iban, nickname, transactions)
   ).byteArray(),
   HttpStatus.OK
   );
@@ -196,12 +196,12 @@ return new ResponseEntity<>(
 ```java
 return new RsWithType(
   new RsWithStatus(
-  new RsWithBody(
-  new BankAccount(iban,nickname,transactions).bytes()
-  ),
-  200
-  ),
-  "application/json"
+    new RsWithBody(
+      new BankAccount(iban, nickname, transactions).bytes()
+      ),
+      200
+    ),
+    "application/json"
   );
 ```
 
