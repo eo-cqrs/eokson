@@ -109,14 +109,14 @@ final class MutableJsonTest {
                 "ocean",
                 new MutableJson()
                     .with("character", "stormy")
-            ).with("nereid", new EmptyJson()),
+            ).with("nereid", new Empty()),
             new MutableJson(
                 new MutableJson().with(
                     "ocean",
                     new MutableJson()
                         .with("character", "stormy")
                 )
-            ).with("nereid", new EmptyJson())
+            ).with("nereid", new Empty())
         ).affirm();
     }
 

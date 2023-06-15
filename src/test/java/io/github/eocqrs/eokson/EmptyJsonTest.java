@@ -29,7 +29,7 @@ final class EmptyJsonTest {
     void creates() {
         new EqualityAssertion(
             new Json.Of("{}"),
-            new EmptyJson()
+            new Empty()
         ).affirm();
     }
 }
