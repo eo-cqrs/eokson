@@ -213,7 +213,7 @@ accounts.insert(new BankAccount(iban,nickname));
 ...or compose it within a larger JSON:
 
 ```java
-Json accounts=new MutableJson()
+Json accounts = new MutableJson()
   .with("name","John")
   .with("surname","Smith")
   .with("account",new BankAccount(iban,nickname));
@@ -242,8 +242,5 @@ $ mvn clean install
 ```
 
 You will need Maven 3.8.7+ and Java 17+.
-
-If you want to contribute to the next release version of eo-kafka, please check
-the [project board](https://github.com/orgs/eo-cqrs/projects/2/views/1).
 
 Our [rultor image](https://github.com/eo-cqrs/eo-kafka-rultor-image) for CI/CD.
