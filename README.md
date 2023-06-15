@@ -51,15 +51,15 @@ dependencies {
 ```java
 // From String:
 String jsonAsString = "{\"nymph\": \"nereid\"}";
-  Json json = new Json.Of(jsonAsString);
+Json json = new Json.Of(jsonAsString);
 
 // From InputStream:
-  InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes());
-  json = new Json.Of(stream);
+InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes());
+json = new Json.Of(stream);
 
 // From Jackson's JsonNode:
-  JsonNode node = new ObjectMapper().readTree(jsonAsString);
-  json = new Json.Of(node);
+JsonNode node = new ObjectMapper().readTree(jsonAsString);
+json = new Json.Of(node);
 ```
 
 ### SmartJson
@@ -72,19 +72,19 @@ the [Smart Object pattern](https://www.yegor256.com/2016/04/26/why-inputstream-d
 String textual = new SmartJson(json).textual();
 
 // Convert it to pretty formatted String:
-  String pretty = new SmartJson(json).pretty();
+String pretty = new SmartJson(json).pretty();
 
 // Convert it to byte array:
-  byte[] bytes = new SmartJson(json).byteArray();
+byte[] bytes = new SmartJson(json).byteArray();
 
 // Get a String field value:
-  Optional<String> leaf = new SmartJson(json).leaf("nymph");
+Optional<String> leaf = new SmartJson(json).leaf("nymph");
 
 // Get a deeply nested Json:
-  SmartJson nested = new SmartJson(json).at("/path/to/nested/json");
+SmartJson nested = new SmartJson(json).at("/path/to/nested/json");
 
 // Get a deeply nested int:
-  int nestedInt = new SmartJson(json).at("/path/to/nested/int");
+int nestedInt = new SmartJson(json).at("/path/to/nested/int");
 ```
 
 ### MutableJson
