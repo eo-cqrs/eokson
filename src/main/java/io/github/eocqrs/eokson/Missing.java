@@ -22,7 +22,6 @@
 
 package io.github.eocqrs.eokson;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
@@ -30,7 +29,7 @@ import java.io.InputStream;
  * It is equivalent to
  * {@code new Json.Of(new byte[0])}.
  */
-public final class MissingJson implements Json {
+public final class Missing implements Json {
 
   /**
    * Missing bytes.
@@ -39,6 +38,6 @@ public final class MissingJson implements Json {
 
   @Override
   public InputStream bytes() {
-    return new ByteArrayInputStream(MISSING);
+    return new Json.Of(MISSING).bytes();
   }
 }

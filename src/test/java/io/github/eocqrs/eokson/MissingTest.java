@@ -25,15 +25,14 @@ package io.github.eocqrs.eokson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 
-import io.github.eocqrs.eokson.MissingJson;
 import org.junit.jupiter.api.Test;
 
-final class MissingJsonTest {
+final class MissingTest {
     @Test
     void creates() throws IOException {
         assertEquals(
             0,
-            new MissingJson().bytes().available()
+            new Missing().bytes().available()
         );
     }
 }

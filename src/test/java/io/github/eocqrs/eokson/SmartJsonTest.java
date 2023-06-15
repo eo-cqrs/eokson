@@ -175,7 +175,7 @@ final class SmartJsonTest {
 
   @Test
   void knowsIfMissing() {
-    assertTrue(new SmartJson(new MissingJson()).isMissing());
+    assertTrue(new SmartJson(new Missing()).isMissing());
   }
 
   @Test
