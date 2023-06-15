@@ -225,9 +225,9 @@ If available functionality in the current version of Nereid is not enough, the d
 jackson-databind. Convert `Json` to `ObjectNode`, do what you need with it, and construct a new `Json`.
 
 ```java
-ObjectNode node=new SmartJson(json).objectNode();
+ObjectNode node = new SmartJson(json).objectNode();
 // Do stuff with node using Jackson's API.
-  Json updated=new Json.Of(node);
+Json updated = new Json.Of(node);
 ```
 
 ## How to Contribute
