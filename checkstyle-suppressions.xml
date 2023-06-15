@@ -26,4 +26,5 @@ SOFTWARE.
 <suppressions>
   <suppress checks="LineLength" files=".*\.java$" lines="0-23"/>
   <suppress checks="HiddenField" files=".*\.java$" lines="23-9999"/>
+  <suppress checks="MagicNumber" files=".*\.java$" lines="0-9999"/>
 </suppressions>
