@@ -95,18 +95,18 @@ declarative notation.
 
 ```java
 Json json = new MutableJson().with(
-  "ocean",
-  new MutableJson().with(
-  "nereid1",
-  new MutableJson()
-  .with("name", "Thetis")
-  .with("hair", "black")
-  ).with(
-  "nereid2",
-  new MutableJson()
-  .with("name", "Actaea")
-  .with("hair", "blonde")
-  )
+    "ocean",
+    new MutableJson().with(
+      "nereid1",
+      new MutableJson()
+        .with("name", "Thetis")
+        .with("hair", "black")
+    ).with(
+      "nereid2",
+      new MutableJson()
+        .with("name", "Actaea")
+        .with("hair", "blonde")
+    )
   .with("stormy", true)
   );
   System.out.println(new SmartJson(json).pretty());
@@ -185,10 +185,10 @@ We can then make an HTTP response directly, e.g. with [Spring](https://spring.io
 ```java         
 return new ResponseEntity<>(
   new SmartJson(
-  new BankAccount(iban, nickname, transactions)
+      new BankAccount(iban, nickname, transactions)
   ).byteArray(),
   HttpStatus.OK
-  );
+);
 ```
 
 ...or with [Takes](https://github.com/yegor256/takes):
@@ -202,7 +202,7 @@ return new RsWithType(
       200
     ),
     "application/json"
-  );
+);
 ```
 
 ...or insert it in some JSON datastore:
