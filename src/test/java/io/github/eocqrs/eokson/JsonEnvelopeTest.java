@@ -24,7 +24,6 @@ package io.github.eocqrs.eokson;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.eocqrs.eokson.matcher.JsonEqualTo;
 import org.junit.jupiter.api.Test;
 
 final class JsonEnvelopeTest {

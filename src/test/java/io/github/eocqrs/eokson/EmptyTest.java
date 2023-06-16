@@ -22,7 +22,6 @@
 
 package io.github.eocqrs.eokson;
 
-import io.github.eocqrs.eokson.matcher.JsonEqualTo;
 import org.junit.jupiter.api.Test;
 
 final class EmptyTest {

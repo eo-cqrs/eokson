@@ -20,10 +20,8 @@
  * SOFTWARE.
  */
 
-package io.github.eocqrs.eokson.matcher;
+package io.github.eocqrs.eokson;
 
-import io.github.eocqrs.eokson.Json;
-import io.github.eocqrs.eokson.SmartJson;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 /*

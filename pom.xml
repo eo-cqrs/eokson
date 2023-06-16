@@ -93,12 +93,6 @@ SOFTWARE.
       <artifactId>jackson-databind</artifactId>
       <version>${jackson-databind.version}</version>
     </dependency>
-    <!--   @todo #6:15m/DEV set test scope -->
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>${hamcrest-all.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -109,6 +103,12 @@ SOFTWARE.
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit-jupiter-engine.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>${hamcrest-all.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

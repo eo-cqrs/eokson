@@ -23,7 +23,6 @@
 package io.github.eocqrs.eokson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.eocqrs.eokson.matcher.JsonEqualTo;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
