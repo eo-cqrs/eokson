@@ -24,6 +24,8 @@ package io.github.eocqrs.eokson;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+
+import java.io.InputStream;
 /*
  * @todo #6:90m/DEV create eokson-matchers package
  */
@@ -54,6 +56,15 @@ public final class JsonEqualTo extends BaseMatcher<Json> {
    */
   public JsonEqualTo(final String jsn) {
     this(new Json.Of(jsn));
+  }
+
+  /**
+   * Ctor.
+   *
+   * @param bytes Bytes
+   */
+  public JsonEqualTo(final InputStream bytes) {
+    this(new Json.Of(bytes));
   }
 
   @Override

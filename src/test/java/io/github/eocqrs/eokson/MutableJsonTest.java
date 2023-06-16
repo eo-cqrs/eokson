@@ -50,7 +50,6 @@ final class MutableJsonTest {
   @Test
   void createsOneAndThenAnotherField() {
     MutableJson json = new MutableJson().with("field1", "value1");
-    json.bytes();
     json.with("field2", 9.9);
     new JsonEqualTo(
       new Json.Of(
@@ -59,7 +58,7 @@ final class MutableJsonTest {
           .put("field2", 9.9)
       )
     ).matches(
-      json
+      json.bytes()
     );
   }
 
