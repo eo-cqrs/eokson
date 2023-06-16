@@ -66,13 +66,15 @@ final class MutableJsonTest {
   @Test
   void createsDeepJson() throws URISyntaxException {
     new JsonEqualTo(
-      new Json.Of(
-        Paths.get(
-          MutableJsonTest.class.getClassLoader().getResource(
-            "deep-noarray.json"
-          ).toURI()
+      new SmartJson(
+        new Json.Of(
+          Paths.get(
+            MutableJsonTest.class.getClassLoader().getResource(
+              "deep-noarray.json"
+            ).toURI()
+          )
         )
-      )
+      ).pretty()
     ).matches(
       new SmartJson(
         new MutableJson().with(
@@ -100,7 +102,7 @@ final class MutableJsonTest {
             )
           )
         )
-      )
+      ).pretty()
     );
   }
 

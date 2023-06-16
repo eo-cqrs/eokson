@@ -47,6 +47,15 @@ public final class JsonEqualTo extends BaseMatcher<Json> {
     this.compare = jsn;
   }
 
+  /**
+   * Ctor.
+   *
+   * @param jsn JSON to compare
+   */
+  public JsonEqualTo(final String jsn) {
+    this(new Json.Of(jsn));
+  }
+
   @Override
   public boolean matches(final Object json) {
     return new SmartJson(this.compare).pretty()
