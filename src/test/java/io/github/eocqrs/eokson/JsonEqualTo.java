@@ -22,14 +22,60 @@
 
 package io.github.eocqrs.eokson;
 
-import org.junit.jupiter.api.Test;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 
-final class EmptyJsonTest {
-    @Test
-    void creates() {
-        new EqualityAssertion(
-            new Json.Of("{}"),
-            new Empty()
-        ).affirm();
-    }
+import java.io.InputStream;
+/*
+ * @todo #6:90m/DEV create eokson-matchers package
+ */
+
+/**
+ * JSON Equality Expression Matcher.
+ */
+public final class JsonEqualTo extends BaseMatcher<Json> {
+
+  /**
+   * JSON to compare.
+   */
+  private final Json compare;
+
+  /**
+   * Ctor.
+   *
+   * @param jsn JSON to compare
+   */
+  public JsonEqualTo(final Json jsn) {
+    this.compare = jsn;
+  }
+
+  /**
+   * Ctor.
+   *
+   * @param jsn JSON to compare
+   */
+  public JsonEqualTo(final String jsn) {
+    this(new Json.Of(jsn));
+  }
+
+  /**
+   * Ctor.
+   *
+   * @param bytes Bytes
+   */
+  public JsonEqualTo(final InputStream bytes) {
+    this(new Json.Of(bytes));
+  }
+
+  @Override
+  public boolean matches(final Object json) {
+    return new SmartJson(this.compare).pretty()
+      .equals(json);
+  }
+
+  @Override
+  public void describeTo(final Description description) {
+    description.appendText(" JSON to compare: ")
+      .appendValue(this.compare);
+  }
 }

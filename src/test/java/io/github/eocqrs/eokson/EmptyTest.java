@@ -22,24 +22,16 @@
 
 package io.github.eocqrs.eokson;
 
-import io.github.eocqrs.eokson.Json;
-import io.github.eocqrs.eokson.SmartJson;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+final class EmptyTest {
 
-public final class EqualityAssertion {
-    private final Json first;
-    private final Json second;
-
-    public EqualityAssertion(Json first, Json second) {
-        this.first = first;
-        this.second = second;
-    }
-
-    public void affirm() {
-        assertEquals(
-            new SmartJson(first).pretty(),
-            new SmartJson(second).pretty()
-        );
-    }
+  @Test
+  void creates() {
+    new JsonEqualTo(
+      new Json.Of("{}")
+    ).matches(
+      new Empty()
+    );
+  }
 }
