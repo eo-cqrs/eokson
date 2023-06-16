@@ -20,26 +20,44 @@
  * SOFTWARE.
  */
 
-package io.github.eocqrs.eokson;
+package io.github.eocqrs.eokson.matcher;
 
 import io.github.eocqrs.eokson.Json;
 import io.github.eocqrs.eokson.SmartJson;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+/*
+ * @todo #6:90m/DEV create eokson-matchers package
+ */
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * JSON Equality Expression Matcher.
+ */
+public final class JsonEqualTo extends BaseMatcher<Json> {
 
-public final class EqualityAssertion {
-    private final Json first;
-    private final Json second;
+  /**
+   * JSON to compare.
+   */
+  private final Json compare;
 
-    public EqualityAssertion(Json first, Json second) {
-        this.first = first;
-        this.second = second;
-    }
+  /**
+   * Ctor.
+   *
+   * @param jsn JSON to compare
+   */
+  public JsonEqualTo(final Json jsn) {
+    this.compare = jsn;
+  }
 
-    public void affirm() {
-        assertEquals(
-            new SmartJson(first).pretty(),
-            new SmartJson(second).pretty()
-        );
-    }
+  @Override
+  public boolean matches(final Object json) {
+    return new SmartJson(this.compare).pretty()
+      .equals(json);
+  }
+
+  @Override
+  public void describeTo(final Description description) {
+    description.appendText(" JSON to compare: ")
+      .appendValue(this.compare);
+  }
 }

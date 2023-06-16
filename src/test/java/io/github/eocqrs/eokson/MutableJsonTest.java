@@ -22,109 +22,113 @@
 
 package io.github.eocqrs.eokson;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.eocqrs.eokson.matcher.JsonEqualTo;
+import org.junit.jupiter.api.Test;
+
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class MutableJsonTest {
 
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+  private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    @Test
-    void createsOneField() {
-        new EqualityAssertion(
-            new Json.Of(
-                MAPPER.createObjectNode()
-                    .put("field1", "value1")
-            ),
-            new MutableJson()
-                .with("field1", "value1")
-        ).affirm();
-    }
+  @Test
+  void createsOneField() {
+    new JsonEqualTo(
+      new Json.Of(
+        MAPPER.createObjectNode()
+          .put("field1", "value1")
+      )
+    ).matches(
+      new MutableJson()
+        .with("field1", "value1")
+    );
+  }
 
-    @Test
-    void createsOneAndThenAnotherField() {
-        MutableJson json = new MutableJson().with("field1", "value1");
-        json.bytes();
-        json.with("field2", 9.9);
-        new EqualityAssertion(
-            new Json.Of(
-                MAPPER.createObjectNode()
-                    .put("field1", "value1")
-                    .put("field2", 9.9)
-            ),
-            json
-        ).affirm();
-    }
+  @Test
+  void createsOneAndThenAnotherField() {
+    MutableJson json = new MutableJson().with("field1", "value1");
+    json.bytes();
+    json.with("field2", 9.9);
+    new JsonEqualTo(
+      new Json.Of(
+        MAPPER.createObjectNode()
+          .put("field1", "value1")
+          .put("field2", 9.9)
+      )
+    ).matches(
+      json
+    );
+  }
 
-    @Test
-    void createsDeepJson() throws URISyntaxException {
-        assertEquals(
-            new SmartJson(
-                new Json.Of(
-                    Paths.get(
-                        MutableJsonTest.class.getClassLoader().getResource(
-                            "deep-noarray.json"
-                        ).toURI()
-                    )
-                )
-            ).pretty(),
-            new SmartJson(
-                new MutableJson().with(
-                    "ocean",
-                    new MutableJson().with(
-                        "rock1",
-                        new MutableJson().with(
-                            "nereid1",
-                            new MutableJson()
-                                .with("hair", "black")
-                                .with("age", 100)
-                        ).with(
-                            "nereid2",
-                            new MutableJson()
-                                .with("hair", "red")
-                                .with("age", 77.5)
-                        )).with(
-                        "rock2",
-                        new MutableJson().with(
-                            "nereid3",
-                            new MutableJson()
-                                .with("hair", "blonde")
-                                .with("age", 88)
-                                .with("fair", true)
-                        )
-                    )
-                )
-            ).pretty()
-        );
-    }
-
-    @Test
-    void buildsOnBase() {
-        new EqualityAssertion(
+  @Test
+  void createsDeepJson() throws URISyntaxException {
+    new JsonEqualTo(
+      new Json.Of(
+        Paths.get(
+          MutableJsonTest.class.getClassLoader().getResource(
+            "deep-noarray.json"
+          ).toURI()
+        )
+      )
+    ).matches(
+      new SmartJson(
+        new MutableJson().with(
+          "ocean",
+          new MutableJson().with(
+            "rock1",
             new MutableJson().with(
-                "ocean",
-                new MutableJson()
-                    .with("character", "stormy")
-            ).with("nereid", new Empty()),
-            new MutableJson(
-                new MutableJson().with(
-                    "ocean",
-                    new MutableJson()
-                        .with("character", "stormy")
-                )
-            ).with("nereid", new Empty())
-        ).affirm();
-    }
+              "nereid1",
+              new MutableJson()
+                .with("hair", "black")
+                .with("age", 100)
+            ).with(
+              "nereid2",
+              new MutableJson()
+                .with("hair", "red")
+                .with("age", 77.5)
+            )).with(
+            "rock2",
+            new MutableJson().with(
+              "nereid3",
+              new MutableJson()
+                .with("hair", "blonde")
+                .with("age", 88)
+                .with("fair", true)
+            )
+          )
+        )
+      )
+    );
+  }
 
-    @Test
-    void toStringOnEmpty() {
-        assertEquals(
-            "{}",
-            new MutableJson().toString()
-        );
-    }
+  @Test
+  void buildsOnBase() {
+    new JsonEqualTo(
+      new MutableJson().with(
+        "ocean",
+        new MutableJson()
+          .with("character", "stormy")
+      ).with("nereid", new Empty())
+    ).matches(
+      new MutableJson(
+        new MutableJson().with(
+          "ocean",
+          new MutableJson()
+            .with("character", "stormy")
+        )
+      ).with("nereid", new Empty())
+    );
+  }
+
+  @Test
+  void toStringOnEmpty() {
+    assertEquals(
+      "{}",
+      new MutableJson().toString()
+    );
+  }
 }

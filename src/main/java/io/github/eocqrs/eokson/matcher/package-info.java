@@ -20,35 +20,8 @@
  * SOFTWARE.
  */
 
-package io.github.eocqrs.eokson;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import io.github.eocqrs.eokson.matcher.JsonEqualTo;
-import org.junit.jupiter.api.Test;
-
-final class JsonEnvelopeTest {
-
-  @Test
-  void smoke() {
-    new JsonEqualTo(
-      new Json.Of("{\"number\": 12}")
-    ).matches(
-      new TestJsonEnvelope(new Json.Of("{\"number\": 12}"))
-    );
-  }
-
-  @Test
-  void toStringWorksWhenMalformed() {
-    assertEquals(
-      "malformed",
-      new TestJsonEnvelope(new Json.Of("malformed")).toString()
-    );
-  }
-
-  private static final class TestJsonEnvelope extends JsonEnvelope {
-    TestJsonEnvelope(Json origin) {
-      super(origin);
-    }
-  }
-}
+/**
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.2
+ */
+package io.github.eocqrs.eokson.matcher;

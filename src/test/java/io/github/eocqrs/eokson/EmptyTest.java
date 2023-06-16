@@ -22,14 +22,17 @@
 
 package io.github.eocqrs.eokson;
 
+import io.github.eocqrs.eokson.matcher.JsonEqualTo;
 import org.junit.jupiter.api.Test;
 
-final class EmptyJsonTest {
-    @Test
-    void creates() {
-        new EqualityAssertion(
-            new Json.Of("{}"),
-            new Empty()
-        ).affirm();
-    }
+final class EmptyTest {
+
+  @Test
+  void creates() {
+    new JsonEqualTo(
+      new Json.Of("{}")
+    ).matches(
+      new Empty()
+    );
+  }
 }
