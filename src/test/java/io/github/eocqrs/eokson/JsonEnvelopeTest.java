@@ -33,7 +33,7 @@ final class JsonEnvelopeTest {
     new JsonEqualTo(
       new Json.Of("{\"number\": 12}")
     ).matches(
-      new TestJsonEnvelope(new Json.Of("{\"number\": 12}"))
+      new TestJsonEnvelope(new Json.Of("{\"number\": 12}")).bytes()
     );
   }
 
