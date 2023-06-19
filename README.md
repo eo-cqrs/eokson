@@ -14,7 +14,7 @@
 
 [![Hits-of-Code](https://hitsofcode.com/github/eo-cqrs/eokson)](https://hitsofcode.com/view/github/eo-cqrs/eokson)
 [![Lines-of-Code](https://tokei.rs/b1/github/eo-cqrs/eokson)](https://github.com/eo-cqrs/eokson)
-[![PDD status](http://www.0pdd.com/svg?name=eo-cqrs/xfake)](http://www.0pdd.com/p?name=eo-cqrs/xfake)
+[![PDD status](http://www.0pdd.com/svg?name=eo-cqrs/eokson)](http://www.0pdd.com/p?name=eo-cqrs/eokson)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/eo-cqrs/eokson/blob/master/LICENSE.txt)
 
 Project architect: [@h1alexbel](https://github.com/h1alexbel)
