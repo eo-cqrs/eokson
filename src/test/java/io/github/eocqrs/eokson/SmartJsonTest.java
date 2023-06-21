@@ -32,7 +32,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class SmartJsonTest {
 
@@ -149,19 +152,17 @@ final class SmartJsonTest {
   }
 
   @Test
-  void understandsArrays() {
-    String array = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
-    assertArrayEquals(
-      array.getBytes(),
-      new ByteArray(
-        new SmartJson(
-          new Json.Of(deep)
-        ).at("/ocean/rock1/nereid1/associates")
-      ).value()
-    );
+  void readsArraysInRightFormat() {
+    new JsonEqualTo(
+      new SmartJson(
+        new Json.Of(
+          this.deep
+        )
+      ).at("/ocean/rock1/nereid1/associates/0").textual()
+    ).matches("{\"name\":\"Jason\"}");
   }
 
-  @Disabled("https://github.com/vzurauskas/nereides-jackson/issues/39")
+  @Disabled
   @Test
   void reallyUnderstandsArrays() {
     String array = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
