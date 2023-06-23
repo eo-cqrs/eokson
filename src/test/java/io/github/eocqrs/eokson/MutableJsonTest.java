@@ -73,7 +73,7 @@ final class MutableJsonTest {
   }
 
   @Test
-  void jsonFromFileInRightFormat() throws URISyntaxException {
+  void readJsonFromFileInRightFormat() throws URISyntaxException {
     MatcherAssert.assertThat(
       "JSON from file in right format",
       new SmartJson(
@@ -141,7 +141,7 @@ final class MutableJsonTest {
   }
 
   @Test
-  void emptyJsonInRightFormat() {
+  void readsEmptyJsonInRightFormat() {
     MatcherAssert.assertThat(
       "Empty JSON in right format",
       new MutableJson().toString(),
