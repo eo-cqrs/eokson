@@ -167,6 +167,9 @@ final class SmartJsonTest {
     );
   }
 
+  /*
+  @todo #6:90m/DEV array leafing test doesn't work
+   */
   @Disabled
   @Test
   void leafsArrays() {
