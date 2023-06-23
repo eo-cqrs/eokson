@@ -25,6 +25,8 @@ package io.github.eocqrs.eokson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -153,13 +155,15 @@ final class SmartJsonTest {
 
   @Test
   void readsArraysInRightFormat() {
-    new JsonEqualTo(
+    MatcherAssert.assertThat(
+      "JSON in right format",
       new SmartJson(
         new Json.Of(
           this.deep
         )
-      ).at("/ocean/rock1/nereid1/associates/0").textual()
-    ).matches("{\"name\":\"Jason\"}");
+      ).at("/ocean/rock1/nereid1/associates/0").textual(),
+      Matchers.equalTo("{\"name\":\"Jason\"}")
+    );
   }
 
   @Disabled

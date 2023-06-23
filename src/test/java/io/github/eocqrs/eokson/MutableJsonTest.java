@@ -23,48 +23,59 @@
 package io.github.eocqrs.eokson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class MutableJsonTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   @Test
-  void createsOneField() {
-    new JsonEqualTo(
-      new Json.Of(
-        MAPPER.createObjectNode()
-          .put("field1", "value1")
-      )
-    ).matches(
+  void addsOneFieldAndReadsInRightFormat() {
+    final String name = "field1";
+    final String value = "value1";
+    MatcherAssert.assertThat(
+      "JSON in right format",
       new MutableJson()
-        .with("field1", "value1")
-    );
-  }
-
-  @Test
-  void createsOneAndThenAnotherField() {
-    MutableJson json = new MutableJson().with("field1", "value1");
-    json.with("field2", 9.9);
-    new JsonEqualTo(
-      new Json.Of(
+        .with(name, value)
+        .toString(),
+      Matchers.equalTo(
         MAPPER.createObjectNode()
-          .put("field1", "value1")
-          .put("field2", 9.9)
+          .put(name, value)
+          .toString()
       )
-    ).matches(
-      json.bytes()
     );
   }
 
   @Test
-  void createsDeepJson() throws URISyntaxException {
-    new JsonEqualTo(
+  void addsFieldsAndReadsInRightFormat() {
+    final String name = "field1";
+    final String second = "field2";
+    final String value = "value1";
+    final double secondValue = 9.9;
+    final MutableJson json =
+      new MutableJson().with(name, value);
+    json.with(second, 9.9);
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      json.toString(),
+      Matchers.equalTo(
+        MAPPER.createObjectNode()
+          .put(name, value)
+          .put(second, secondValue)
+          .toString()
+      )
+    );
+  }
+
+  @Test
+  void jsonFromFileInRightFormat() throws URISyntaxException {
+    MatcherAssert.assertThat(
+      "JSON from file in right format",
       new SmartJson(
         new Json.Of(
           Paths.get(
@@ -73,62 +84,68 @@ final class MutableJsonTest {
             ).toURI()
           )
         )
-      ).pretty()
-    ).matches(
-      new SmartJson(
-        new MutableJson().with(
-          "ocean",
+      ).pretty(),
+      Matchers.equalTo(
+        new SmartJson(
           new MutableJson().with(
-            "rock1",
+            "ocean",
             new MutableJson().with(
-              "nereid1",
-              new MutableJson()
-                .with("hair", "black")
-                .with("age", 100)
-            ).with(
-              "nereid2",
-              new MutableJson()
-                .with("hair", "red")
-                .with("age", 77.5)
-            )).with(
-            "rock2",
-            new MutableJson().with(
-              "nereid3",
-              new MutableJson()
-                .with("hair", "blonde")
-                .with("age", 88)
-                .with("fair", true)
+              "rock1",
+              new MutableJson().with(
+                "nereid1",
+                new MutableJson()
+                  .with("hair", "black")
+                  .with("age", 100)
+              ).with(
+                "nereid2",
+                new MutableJson()
+                  .with("hair", "red")
+                  .with("age", 77.5)
+              )).with(
+              "rock2",
+              new MutableJson().with(
+                "nereid3",
+                new MutableJson()
+                  .with("hair", "blonde")
+                  .with("age", 88)
+                  .with("fair", true)
+              )
             )
           )
-        )
-      ).pretty()
+        ).pretty()
+      )
     );
   }
 
   @Test
-  void buildsOnBase() {
-    new JsonEqualTo(
+  void equalsMutableJsons() {
+    MatcherAssert.assertThat(
+      "Based JSONs are equal",
       new MutableJson().with(
-        "ocean",
-        new MutableJson()
-          .with("character", "stormy")
-      ).with("nereid", new Empty())
-    ).matches(
-      new MutableJson(
-        new MutableJson().with(
           "ocean",
           new MutableJson()
             .with("character", "stormy")
-        )
-      ).with("nereid", new Empty())
+        ).with("nereid", new Empty())
+        .toString(),
+      Matchers.equalTo(
+        new MutableJson(
+          new MutableJson().with(
+            "ocean",
+            new MutableJson()
+              .with("character", "stormy")
+          )
+        ).with("nereid", new Empty())
+          .toString()
+      )
     );
   }
 
   @Test
-  void toStringOnEmpty() {
-    assertEquals(
-      "{}",
-      new MutableJson().toString()
+  void emptyJsonInRightFormat() {
+    MatcherAssert.assertThat(
+      "Empty JSON in right format",
+      new MutableJson().toString(),
+      Matchers.equalTo("{}")
     );
   }
 }

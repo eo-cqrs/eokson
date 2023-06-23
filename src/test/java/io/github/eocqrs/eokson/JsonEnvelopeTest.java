@@ -22,31 +22,30 @@
 
 package io.github.eocqrs.eokson;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 final class JsonEnvelopeTest {
 
   @Test
-  void smoke() {
-    new JsonEqualTo(
-      new Json.Of("{\"number\": 12}")
-    ).matches(
-      new TestJsonEnvelope(new Json.Of("{\"number\": 12}")).bytes()
-    );
-  }
-
-  @Test
-  void toStringWorksWhenMalformed() {
-    assertEquals(
-      "malformed",
-      new TestJsonEnvelope(new Json.Of("malformed")).toString()
+  void readsJsonWithEnvelopeInRightFormat() {
+    final String value = "{\"number\": \"12\"}";
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new Json.Of(value).toString(),
+      Matchers.equalTo(
+        new JsonEnvelopeTest.TestJsonEnvelope(
+          new Json.Of(
+            value
+          )
+        ).toString()
+      )
     );
   }
 
   private static final class TestJsonEnvelope extends JsonEnvelope {
-    TestJsonEnvelope(Json origin) {
+    TestJsonEnvelope(final Json origin) {
       super(origin);
     }
   }

@@ -22,16 +22,20 @@
 
 package io.github.eocqrs.eokson;
 
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 final class EmptyTest {
 
   @Test
-  void creates() {
-    new JsonEqualTo(
-      new Json.Of("{}")
-    ).matches(
-      new Empty()
+  void readsEmptyJsonInRightFormat() {
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new Json.Of("{}").toString(),
+      Matchers.equalTo(
+        new Empty().toString()
+      )
     );
   }
 }
