@@ -40,6 +40,17 @@ final class JsonEnvelopeTest {
   }
 
   @Test
+  void bytesAreNotNull() {
+    MatcherAssert.assertThat(
+      "JSON bytes is not NULL",
+      new JsonEnvelopeTest.TestJsonEnvelope(
+        new Json.Of("{}")
+      ).bytes(),
+      Matchers.notNullValue()
+    );
+  }
+
+  @Test
   void readsJsonWithEnvelopeInRightFormat() {
     final String value = "{\"number\": \"12\"}";
     MatcherAssert.assertThat(
