@@ -143,7 +143,7 @@ public final class MutableJson implements Json {
 
   @Override
   public InputStream bytes() {
-    return new Json.Of(this.base).bytes();
+    return new JsonOf(this.base).bytes();
   }
 
   @Override

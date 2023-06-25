@@ -31,7 +31,7 @@ public final class Empty implements Json {
 
   @Override
   public InputStream bytes() {
-    return new Json.Of("{}").bytes();
+    return new JsonOf("{}").bytes();
   }
 
   @Override

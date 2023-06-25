@@ -52,7 +52,7 @@ final class JsonOfTest {
     );
     assertArrayEquals(
       bytes,
-      new ByteArray(new Json.Of(bytes)).value()
+      new ByteArray(new JsonOf(bytes)).value()
     );
   }
 
@@ -61,7 +61,7 @@ final class JsonOfTest {
     String string = "{\"number\": 12}";
     assertArrayEquals(
       string.getBytes(),
-      new ByteArray(new Json.Of(string)).value()
+      new ByteArray(new JsonOf(string)).value()
     );
   }
 
@@ -71,7 +71,7 @@ final class JsonOfTest {
     assertArrayEquals(
       bytes,
       new ByteArray(
-        new Json.Of(
+        new JsonOf(
           new ByteArrayInputStream(bytes)
         )
       ).value()
@@ -85,7 +85,7 @@ final class JsonOfTest {
       .put("field2", "value2");
     assertArrayEquals(
       MAPPER.writeValueAsBytes(node),
-      new ByteArray(new Json.Of(node)).value()
+      new ByteArray(new JsonOf(node)).value()
     );
   }
 
@@ -96,7 +96,7 @@ final class JsonOfTest {
     );
     assertArrayEquals(
       Files.readAllBytes(path),
-      new ByteArray(new Json.Of(path)).value()
+      new ByteArray(new JsonOf(path)).value()
     );
   }
 
@@ -105,7 +105,7 @@ final class JsonOfTest {
     String string = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
     assertArrayEquals(
       string.getBytes(),
-      new ByteArray(new Json.Of(string)).value()
+      new ByteArray(new JsonOf(string)).value()
     );
   }
 
@@ -113,14 +113,14 @@ final class JsonOfTest {
   void toStringWorksEvenIfMalformed() {
     assertEquals(
       "malformed",
-      new Json.Of("malformed").toString()
+      new JsonOf("malformed").toString()
     );
   }
 
   @Test
   void canReadTwice() {
     String string = "{\"number\": 12}";
-    Json json = new Json.Of(string);
+    Json json = new JsonOf(string);
     assertArrayEquals(string.getBytes(), new ByteArray(json).value());
     assertArrayEquals(string.getBytes(), new ByteArray(json).value());
   }
@@ -132,7 +132,7 @@ final class JsonOfTest {
     try (PrintStream ps = new PrintStream(file)) {
       ps.print(string);
     }
-    Json json = new Json.Of(file.toPath());
+    Json json = new JsonOf(file.toPath());
     assertArrayEquals(string.getBytes(), new ByteArray(json).value());
     file.delete();
     assertArrayEquals(string.getBytes(), new ByteArray(json).value());

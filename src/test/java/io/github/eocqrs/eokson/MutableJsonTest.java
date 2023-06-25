@@ -77,7 +77,7 @@ final class MutableJsonTest {
     MatcherAssert.assertThat(
       "JSON from file in right format",
       new SmartJson(
-        new Json.Of(
+        new JsonOf(
           Paths.get(
             MutableJsonTest.class.getClassLoader().getResource(
               "deep-noarray.json"
