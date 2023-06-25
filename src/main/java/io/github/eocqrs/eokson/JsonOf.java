@@ -54,8 +54,7 @@ public final class JsonOf implements Json {
   /**
    * Ctor.
    *
-   * @param node JSON represented by {@link JsonNode} from
-   *             'jackson-databind' library.
+   * @param node JSON represented by {@link JsonNode}
    */
   public JsonOf(final JsonNode node) {
     this(() -> node);
@@ -64,8 +63,7 @@ public final class JsonOf implements Json {
   /**
    * Ctor.
    *
-   * @param node JSON represented by {@link JsonNode} from
-   *             'jackson-databind' library.
+   * @param node JSON represented by {@link JsonNode}
    */
   public JsonOf(final Supplier<JsonNode> node) {
     this(
@@ -93,7 +91,7 @@ public final class JsonOf implements Json {
   /**
    * Ctor.
    *
-   * @param bytes JSON represented by an array of bytes.
+   * @param bytes JSON represented by an array of bytes
    */
   public JsonOf(final byte[] bytes) {
     this(
@@ -107,7 +105,7 @@ public final class JsonOf implements Json {
    * Ctor.
    *
    * @param stream JSON represented by the bytes in an
-   *               {@link InputStream}.
+   *               {@link InputStream}
    */
   public JsonOf(final InputStream stream) {
     this.origin = () -> stream;
@@ -116,7 +114,7 @@ public final class JsonOf implements Json {
   /**
    * Ctor.
    *
-   * @param path Path to a JSON in a file.
+   * @param path Path to a JSON in a file
    */
   public JsonOf(final Path path) {
     this(
