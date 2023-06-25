@@ -32,7 +32,7 @@ final class EmptyTest {
   void readsEmptyJsonInRightFormat() {
     MatcherAssert.assertThat(
       "JSON in right format",
-      new Json.Of("{}").toString(),
+      new JsonOf("{}").toString(),
       Matchers.equalTo(
         new Empty().toString()
       )

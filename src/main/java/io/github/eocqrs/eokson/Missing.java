@@ -38,6 +38,6 @@ public final class Missing implements Json {
 
   @Override
   public InputStream bytes() {
-    return new Json.Of(MISSING).bytes();
+    return new JsonOf(MISSING).bytes();
   }
 }

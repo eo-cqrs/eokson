@@ -34,7 +34,7 @@ final class JsonEnvelopeTest {
     Assertions.assertDoesNotThrow(
       () ->
         new JsonEnvelopeTest.TestJsonEnvelope(
-          new Json.Of("{}")
+          new JsonOf("{}")
         ).bytes()
     );
   }
@@ -44,7 +44,7 @@ final class JsonEnvelopeTest {
     MatcherAssert.assertThat(
       "JSON bytes is not NULL",
       new JsonEnvelopeTest.TestJsonEnvelope(
-        new Json.Of("{}")
+        new JsonOf("{}")
       ).bytes(),
       Matchers.notNullValue()
     );
@@ -55,10 +55,10 @@ final class JsonEnvelopeTest {
     final String value = "{\"number\": \"12\"}";
     MatcherAssert.assertThat(
       "JSON in right format",
-      new Json.Of(value).toString(),
+      new JsonOf(value).toString(),
       Matchers.equalTo(
         new JsonEnvelopeTest.TestJsonEnvelope(
-          new Json.Of(
+          new JsonOf(
             value
           )
         ).toString()

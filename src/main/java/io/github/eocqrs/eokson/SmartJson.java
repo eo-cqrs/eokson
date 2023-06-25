@@ -266,7 +266,7 @@ public final class SmartJson implements Json {
    */
   public SmartJson at(final String path) {
     return new SmartJson(
-      new Json.Of(this.jackson.value().at(path))
+      new JsonOf(this.jackson.value().at(path))
     );
   }
 
