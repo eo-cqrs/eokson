@@ -81,17 +81,13 @@ public final class JsonOf implements Json {
     );
   }
 
-  private static <T> T flattened(final Supplier<T> scalar) {
-    return scalar.get();
-  }
-
   /**
    * Ctor.
    *
-   * @param string JSON represented by a {@link String}.
+   * @param str JSON represented by a {@link String}.
    */
-  public JsonOf(final String string) {
-    this(string.getBytes());
+  public JsonOf(final String str) {
+    this(str.getBytes());
   }
 
   /**
@@ -134,12 +130,26 @@ public final class JsonOf implements Json {
     );
   }
 
-  private JsonOf(final Cached<InputStream> cached) {
+  /**
+   * Ctor.
+   *
+   * @param cached Cached
+   */
+  public JsonOf(final Cached<InputStream> cached) {
     this(cached::value);
   }
 
-  private JsonOf(final Json json) {
+  /**
+   * Ctor.
+   *
+   * @param json JSON
+   */
+  public JsonOf(final Json json) {
     this.origin = json;
+  }
+
+  private static <T> T flattened(final Supplier<T> scalar) {
+    return scalar.get();
   }
 
   @Override
