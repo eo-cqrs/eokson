@@ -25,9 +25,10 @@ package io.github.eocqrs.eokson;
 import java.io.InputStream;
 
 /**
- * {@link Json}, Which is missing.
- * It is equivalent to
- * {@code new Json.Of(new byte[0])}.
+ * Missing JSON.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
  */
 public final class Missing implements Json {
 
