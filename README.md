@@ -19,7 +19,7 @@
 
 Project architect: [@h1alexbel](https://github.com/h1alexbel)
 
-EOkson - Elegant, Object-Oriented JSON Transformations.
+EOkson - Elegant, Object-Oriented JSON Manipulations.
 
 **Motivation**. We are not happy dealing with JSON in procedural way.
 <br>
