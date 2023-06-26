@@ -29,7 +29,7 @@ SOFTWARE.
   <version>1.0-SNAPSHOT</version>
   <name>eokson</name>
   <description>
-    Elegant, Object-Oriented JSON Transformations
+    Elegant, Object-Oriented JSON Manipulations
   </description>
   <url>https://github.com/eo-cqrs/eokson</url>
   <inceptionYear>2023</inceptionYear>
