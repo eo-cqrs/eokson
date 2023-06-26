@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +36,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,113 +45,121 @@ final class SmartJsonTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  private final Path deep;
+  private Path deep;
 
-  SmartJsonTest() throws URISyntaxException {
+  @BeforeEach
+  void setUp() throws URISyntaxException {
     this.deep = Paths.get(
       SmartJsonTest.class.getClassLoader()
-        .getResource("deep.json").toURI()
+        .getResource("deep.json")
+        .toURI()
     );
   }
 
   @Test
-  void givesByteStream() {
-    final byte[] bytes = "{\"field1\":\"value1\",\"field2\":\"value2\"}"
-      .getBytes();
-    assertArrayEquals(
-      bytes,
-      new ByteArray(
-        new SmartJson(
-          new JsonOf(bytes)
-        )
-      ).value()
-    );
-  }
-
-  @Test
-  void convertsToString() {
-    assertEquals(
-      "{\"field1\":\"value1\","
-        + "\"field2\":\"value2\"}",
+  void readsAsTextInRightFormat() {
+    MatcherAssert.assertThat(
+      "JSON as text in right format",
       new SmartJson(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("field2", "value2")
         )
-      ).textual()
+      ).textual(),
+      Matchers.equalTo(
+        "{\"field1\":\"value1\","
+          + "\"field2\":\"value2\"}"
+      )
     );
   }
 
   @Test
-  void convertsToPrettyString() {
-    assertEquals(
-      '{' + System.lineSeparator()
-        + "  \"field1\" : \"value1\"," + System.lineSeparator()
-        + "  \"field2\" : \"value2\"" + System.lineSeparator()
-        + '}',
+  void readsAsPrettyInRightFormat() {
+    MatcherAssert.assertThat(
+      "JSON as pretty text in right format",
       new SmartJson(
-         new JsonOf(
+        new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("field2", "value2")
         )
-      ).pretty()
+      ).pretty(),
+      Matchers.equalTo(
+        '{' + System.lineSeparator()
+          + "  \"field1\" : \"value1\"," + System.lineSeparator()
+          + "  \"field2\" : \"value2\"" + System.lineSeparator()
+          + '}'
+      )
     );
   }
 
   @Test
-  void convertsToByteArray() throws JsonProcessingException {
+  void readsByteArray() throws JsonProcessingException {
     final byte[] bytes = MAPPER.writeValueAsBytes(
       MAPPER.createObjectNode()
         .put("field1", "value1")
         .put("field2", "value2")
     );
-    assertArrayEquals(
-      bytes,
-      new SmartJson(new JsonOf(bytes)).byteArray()
+    MatcherAssert.assertThat(
+      "Reads byte array",
+      new SmartJson(
+        new JsonOf(bytes)
+      ).byteArray(),
+      Matchers.equalTo(
+        bytes
+      )
     );
   }
 
   @Test
-  void convertsToObjectNode() {
+  void readsAsObjectNode() {
     final ObjectNode node = MAPPER.createObjectNode()
       .put("field1", "value1")
       .put("field2", "value2");
-    assertEquals(
-      node,
+    MatcherAssert.assertThat(
+      "Reads Object Node",
       new SmartJson(
-        new JsonOf(node)
-      ).objectNode()
+        new JsonOf(
+          node
+        )
+      ).objectNode(),
+      Matchers.equalTo(node)
     );
   }
 
   @Test
-  void findsPath() {
-    assertEquals(
-      "red",
+  void readsAsLeaf() {
+    MatcherAssert.assertThat(
+      "Reads as JSON leaf",
       new SmartJson(
         new JsonOf(this.deep)
-      ).at("/ocean/rock1/nereid2").leaf("hair")
+      ).at("/ocean/rock1/nereid2").leaf("hair"),
+      Matchers.equalTo("red")
     );
   }
 
   @Test
-  void handlesNonExistentPaths() {
-    assertTrue(
+  void handlesMissingDataAtLeaf() {
+    MatcherAssert.assertThat(
+      "Handles missing data at leaf",
       new SmartJson(
         new JsonOf(this.deep)
-      ).at("/ocean/nothing").isMissing()
+      ).at("/ocean/nothing")
+        .isMissing(),
+      Matchers.equalTo(true)
     );
   }
 
   @Test
-  void findsPathInArray() {
-    assertEquals(
-      "Jason",
+  void readsLeafInArray() {
+    MatcherAssert.assertThat(
+      "Leaf in array in right format",
       new SmartJson(
         new JsonOf(this.deep)
-      ).at("/ocean/rock1/nereid1/associates/0").leaf("name")
+      ).at("/ocean/rock1/nereid1/associates/0")
+        .leaf("name"),
+      Matchers.equalTo("Jason")
     );
   }
 
@@ -184,19 +193,33 @@ final class SmartJsonTest {
 
   @Test
   void knowsIfMissing() {
-    assertTrue(new SmartJson(new Missing()).isMissing());
+    MatcherAssert.assertThat(
+      "Missing in right format",
+      new SmartJson(new Missing()).isMissing(),
+      Matchers.equalTo(true)
+    );
   }
 
   @Test
-  void knowsIfNotMissing() {
-    assertFalse(new SmartJson(new JsonOf("{}")).isMissing());
+  void knowsEmptyJsonIsNotMissing() {
+    MatcherAssert.assertThat(
+      "Empty JSON is not missing",
+      new SmartJson(
+        new JsonOf("{}")
+      ).isMissing(),
+      Matchers.equalTo(false)
+    );
   }
 
   @Test
-  void stringifiesOnMailFormed() {
-    assertEquals(
-      "malformed",
-      new SmartJson(new JsonOf("malformed")).toString()
+  void stringifiesInRightFormat() {
+    final String data = "test";
+    MatcherAssert.assertThat(
+      "Stringifies in right format",
+      new SmartJson(
+        new JsonOf(data)
+      ).toString(),
+      Matchers.equalTo(data)
     );
   }
 
@@ -205,8 +228,16 @@ final class SmartJsonTest {
     final SmartJson json = new SmartJson(
       new JsonOf("{\"field1\":\"value1\",\"field2\":\"value2\"}")
     );
-    assertEquals("value1", json.leaf("field1"));
-    assertEquals("value1", json.leaf("field1"));
+    MatcherAssert.assertThat(
+      "Reads first time in right format",
+      json.leaf("field1"),
+      Matchers.equalTo("value1")
+    );
+    MatcherAssert.assertThat(
+      "Reads second time in right format",
+      json.leaf("field1"),
+      Matchers.equalTo("value1")
+    );
   }
 
   @Test
@@ -224,32 +255,36 @@ final class SmartJsonTest {
   }
 
   @Test
-  void findsLeaf() {
-    assertEquals(
-      "value2",
+  void leafsInRightFormat() {
+    MatcherAssert.assertThat(
+      "Leafs in right format",
       new SmartJson(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("field2", "value2")
         )
-      ).leaf("field2")
+      ).leaf("field2"),
+      Matchers.equalTo("value2")
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentLeaf() {
-    assertFalse(
+  void returnsEmptyOnEmptyLeaf() {
+    MatcherAssert.assertThat(
+      "Returns False on empty leaf",
       new SmartJson(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeaf("nonexistent").isPresent()
+      ).optLeaf("doesnotexists")
+        .isPresent(),
+      Matchers.equalTo(false)
     );
   }
 
   @Test
-  void throwsForNonexistentLeaf() {
+  void throwsOnNonexistentLeaf() {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
@@ -263,20 +298,24 @@ final class SmartJsonTest {
   }
 
   @Test
-  void returnsEmptyOptionalIfLeafIsNotString() {
-    assertFalse(
+  void returnsEmptyOnLeafIsNotString() {
+    final String field = "intField";
+    MatcherAssert.assertThat(
+      "Returns empty on leaf is not string",
       new SmartJson(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("intField", 5)
         )
-      ).optLeaf("intField").isPresent()
+      ).optLeaf(field).isPresent(),
+      Matchers.equalTo(false)
     );
   }
 
   @Test
-  void throwsIfLeafIsNotString() {
+  void throwsOnLeafIsNotString() {
+    final String field = "intField";
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
@@ -284,23 +323,25 @@ final class SmartJsonTest {
           new JsonOf(
             MAPPER.createObjectNode()
               .put("field1", "value1")
-              .put("intField", 5)
+              .put(field, 5)
           )
-        ).leaf("intField")
+        ).leaf(field)
       ).getMessage().contains("No such field")
     );
   }
 
   @Test
-  void emptyFieldName() {
-    assertFalse(
+  void returnsEmptyOnEmptyString() {
+    MatcherAssert.assertThat(
+      "Returns empty on empty string",
       new SmartJson(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("intField", 5)
         )
-      ).optLeaf("").isPresent()
+      ).optLeaf("").isPresent(),
+      Matchers.equalTo(false)
     );
   }
 
