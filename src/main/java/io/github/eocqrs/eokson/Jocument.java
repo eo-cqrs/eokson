@@ -138,7 +138,10 @@ public final class Jocument implements Json {
    * @return Optional leaf value
    */
   public Optional<String> optLeaf(final String path) {
-    return this.nodeAt(path).map(JsonNode::textValue);
+    return new NodeAt(
+      path,
+      this.jackson
+    ).value().map(JsonNode::textValue);
   }
 
   /**
@@ -163,7 +166,10 @@ public final class Jocument implements Json {
    * @return Optional leaf value
    */
   public Optional<Integer> optLeafAsInt(final String path) {
-    return this.nodeAt(path).map(JsonNode::intValue);
+    return new NodeAt(
+      path,
+      this.jackson
+    ).value().map(JsonNode::intValue);
   }
 
   /**
@@ -188,7 +194,10 @@ public final class Jocument implements Json {
    * @return Optional leaf value
    */
   public Optional<Double> optLeafAsDouble(final String path) {
-    return this.nodeAt(path).map(JsonNode::doubleValue);
+    return new NodeAt(
+      path,
+      this.jackson
+    ).value().map(JsonNode::doubleValue);
   }
 
   /**
@@ -213,7 +222,10 @@ public final class Jocument implements Json {
    * @return Optional leaf value
    */
   public Optional<Boolean> optLeafAsBool(final String path) {
-    return this.nodeAt(path).map(JsonNode::booleanValue);
+    return new NodeAt(
+      path,
+      this.jackson
+    ).value().map(JsonNode::booleanValue);
   }
 
   /**
@@ -229,19 +241,6 @@ public final class Jocument implements Json {
         "No such field of specified type: " + path
       )
     );
-  }
-
-  private Optional<JsonNode> nodeAt(final String path) {
-    final JsonNode node;
-    if (!path.isEmpty() && path.charAt(0) == '/') {
-      node = this.jackson.value().at(path);
-    } else {
-      node = this.jackson.value().path(path);
-    }
-    if (node.isMissingNode()) {
-      return Optional.empty();
-    }
-    return Optional.of(node);
   }
 
   /**
