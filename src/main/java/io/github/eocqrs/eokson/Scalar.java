@@ -25,6 +25,7 @@ package io.github.eocqrs.eokson;
 /**
  * Exception-Safe Scalar type.
  *
+ * @param <T> Scalar type
  * @author Aliaksei Bialiauski (abialaiuski.dev@gmail.com)
  * @since 0.1.2
  */
