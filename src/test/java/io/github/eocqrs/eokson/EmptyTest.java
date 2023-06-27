@@ -26,6 +26,12 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test case for {@link Empty}.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
+ */
 final class EmptyTest {
 
   @Test

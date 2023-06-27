@@ -137,7 +137,7 @@ public final class MutableJson implements Json {
    * @return This JSON.
    */
   public MutableJson with(final String name, final Json value) {
-    this.base.set(name, new SmartJson(value).objectNode());
+    this.base.set(name, new Jocument(value).objectNode());
     return this;
   }
 
