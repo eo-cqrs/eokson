@@ -31,24 +31,29 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * A smart JSON. It can represent itself in other data types such as,
+ * JSON Document.
+ * <p>
+ * It can represent itself in other data types such as,
  * byte arrays, {@link String}s, {@link InputStream}s, and so forth. It can also
  * give its nested JSONs and leaves, tell if it is missing and do other useful
  * things. To use it, you need to wrap another {@link Json} in it, e.g.
  * <pre>
  * {@code
- * Json original = new Json.Of(...);
- * SmartJson smart = new SmartJson(original);
- * String textual = smart.textual();
- * InputStream stream = smart.inputStream();
- * SmartJson nested = smart.at("/path/to/nested/json");
+ * Json original = new JsonOf(...);
+ * Jocument document = new Jocument(original);
+ * String textual = document.textual();
+ * InputStream stream = document.inputStream();
+ * Jocument nested = document.at("/path/to/nested/json");
  * if (!nested.isMissing()) {
  *     Optional<String> value = nested.leaf("fieldName");
  * }
  * }
  * </pre>
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
  */
-public final class SmartJson implements Json {
+public final class Jocument implements Json {
 
   /**
    * Object Mapper.
@@ -72,26 +77,32 @@ public final class SmartJson implements Json {
   /**
    * Ctor.
    *
-   * @param origin Original JSON as basis to this {@code SmartJson}.
+   * @param orgn Original JSON
    */
-  public SmartJson(final Json origin) {
+  public Jocument(final Json orgn) {
     this(
-      origin,
+      orgn,
       new Unchecked<>(
-        () -> MAPPER.readValue(origin.bytes(), ObjectNode.class)
+        () -> MAPPER.readValue(orgn.bytes(), ObjectNode.class)
       )
     );
   }
 
-  private SmartJson(final Json origin, final Unchecked<ObjectNode> jackson) {
-    this.origin = origin;
-    this.jackson = jackson;
+  /**
+   * Ctor.
+   *
+   * @param orgn Original JSON
+   * @param node Object node
+   */
+  private Jocument(final Json orgn, final Unchecked<ObjectNode> node) {
+    this.origin = orgn;
+    this.jackson = node;
   }
 
   /**
-   * Represent this JSON in textual form.
+   * JSON as text.
    *
-   * @return String representing this JSON in textual form.
+   * @return String representing this JSON in textual form
    */
   public String textual() {
     return new Unchecked<>(
@@ -100,9 +111,9 @@ public final class SmartJson implements Json {
   }
 
   /**
-   * Represent this JSON in pretty format textual form.
+   * JSON as pretty text.
    *
-   * @return String representing this JSON in pretty format textual form.
+   * @return String representing this JSON in pretty format textual form
    */
   public String pretty() {
     return new Unchecked<>(
@@ -112,32 +123,30 @@ public final class SmartJson implements Json {
   }
 
   /**
-   * Represent this JSON in an array of bytes.
+   * JSON as an array of bytes.
    *
-   * @return Byte array representing this JSON.
+   * @return Byte array
    */
   public byte[] byteArray() {
     return new ByteArray(this.bytes()).value();
   }
 
   /**
-   * Method to get a {@code String} type  leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code String}, boxed in {@code Optional} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Optional value of the leaf.
+   * @param path JSON path
+   * @return Optional leaf value
    */
   public Optional<String> optLeaf(final String path) {
     return this.nodeAt(path).map(JsonNode::textValue);
   }
 
   /**
-   * Method to get a {@code String} type leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code String} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return String value of the field, if the leaf exists.
-   * @throws IllegalArgumentException if leaf does not exist.
+   * @param path JSON path
+   * @return String leaf value, if the leaf exists
+   * @throws IllegalArgumentException if leaf does not exist
    */
   public String leaf(final String path) {
     return this.optLeaf(path).orElseThrow(
@@ -148,23 +157,21 @@ public final class SmartJson implements Json {
   }
 
   /**
-   * Method to get an {@code int} type  leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code Integer}, boxed in {@code Optional} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Optional value of the leaf.
+   * @param path JSON path
+   * @return Optional leaf value
    */
   public Optional<Integer> optLeafAsInt(final String path) {
     return this.nodeAt(path).map(JsonNode::intValue);
   }
 
   /**
-   * Method to get an {@code int} type  leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code int} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Int value of the leaf.
-   * @throws IllegalArgumentException if leaf does not exist.
+   * @param path JSON path
+   * @return Int leaf value
+   * @throws IllegalArgumentException if leaf does not exist
    */
   public int leafAsInt(final String path) {
     return this.optLeafAsInt(path).orElseThrow(
@@ -175,23 +182,21 @@ public final class SmartJson implements Json {
   }
 
   /**
-   * Method to get a {@code double} type  leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code double}, boxed in {@code Optional} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Optional value of the leaf.
+   * @param path JSON path
+   * @return Optional leaf value
    */
   public Optional<Double> optLeafAsDouble(final String path) {
     return this.nodeAt(path).map(JsonNode::doubleValue);
   }
 
   /**
-   * Method to get an {@code double} type leaf (primitive field) of this JSON.
+   * Get a leaf of type {@code double} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Double value of the leaf.
-   * @throws IllegalArgumentException if leaf does not exist.
+   * @param path JSON path
+   * @return Double leaf value
+   * @throws IllegalArgumentException if leaf does not exist
    */
   public double leafAsDouble(final String path) {
     return this.optLeafAsDouble(path).orElseThrow(
@@ -202,25 +207,21 @@ public final class SmartJson implements Json {
   }
 
   /**
-   * Method to get a {@code boolean} type  leaf (primitive field) of this
-   * JSON.
+   * Get a leaf of type {@code Boolean}, boxed in {@code Optional} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Optional value of the leaf.
+   * @param path JSON path
+   * @return Optional leaf value
    */
   public Optional<Boolean> optLeafAsBool(final String path) {
     return this.nodeAt(path).map(JsonNode::booleanValue);
   }
 
   /**
-   * Method to get an {@code int} type field  leaf (primitive field) of this
-   * JSON.
+   * Get a leaf of type {@code boolean} of this JSON.
    *
-   * @param path JSON path to the leaf or the name of the leaf if it is
-   *             directly at the root of this JSON.
-   * @return Boolean value of the leaf.
-   * @throws IllegalArgumentException if field does not exist.
+   * @param path JSON path
+   * @return Boolean leaf value
+   * @throws IllegalArgumentException if field does not exist
    */
   public boolean leafAsBool(final String path) {
     return this.optLeafAsBool(path).orElseThrow(
@@ -231,49 +232,56 @@ public final class SmartJson implements Json {
   }
 
   private Optional<JsonNode> nodeAt(final String path) {
-    final JsonNode node = !path.isEmpty() && path.charAt(0) == '/'
-      ? this.jackson.value().at(path)
-      : this.jackson.value().path(path);
-    return node.isMissingNode()
-      ? Optional.empty()
-      : Optional.of(node);
+    final JsonNode node;
+    if (!path.isEmpty() && path.charAt(0) == '/') {
+      node = this.jackson.value().at(path);
+    } else {
+      node = this.jackson.value().path(path);
+    }
+    if (node.isMissingNode()) {
+      return Optional.empty();
+    }
+    return Optional.of(node);
   }
 
   /**
    * Represent this JSON as {@link ObjectNode} in case full JSON manipulation
    * capabilities offered by jackson-databind library are needed.
    *
-   * @return This JSON as {@link ObjectNode}.
+   * @return This JSON as {@link ObjectNode}
    */
   public ObjectNode objectNode() {
     return this.jackson.value();
   }
 
   /**
-   * Method to get a JSON nested within this JSON, specified by path. Path
-   * starts with a forward slash, and path elements are separated by forward
-   * slashes also, e.g.
+   * Get a JSON nested within this JSON, specified by path.
+   * Path starts with a forward slash, and path elements
+   * are separated by forward slashes also, e.g.
    * <pre>
    * {@code
-   * SmartJson nested = json.at("/path/to/nested/json");}
+   * Jocument nested = json.at("/path/to/nested/json");}
    * </pre>
    * This method never returns null. If there is no JSON as specified by the
    * path, a missing JSON is returned, i.e.
    * {@code returned.isMissing() == true}.
    *
-   * @param path Path to the nested JSON.
-   * @return The nested JSON, which could be missing.
+   * @param path Path to the nested JSON
+   * @return The nested JSON, which could be missing
    */
-  public SmartJson at(final String path) {
-    return new SmartJson(
-      new JsonOf(this.jackson.value().at(path))
+  public Jocument at(final String path) {
+    return new Jocument(
+      new JsonOf(
+        this.jackson.value()
+          .at(path)
+      )
     );
   }
 
   /**
-   * Method which tells if this JSON is missing.
+   * Tells if this JSON is missing.
    *
-   * @return true if this JSON is missing; otherwise false.
+   * @return Is missing or not
    */
   public boolean isMissing() {
     final byte[] bytes = this.byteArray();
@@ -287,6 +295,9 @@ public final class SmartJson implements Json {
 
   @Override
   public String toString() {
-    return new String(new ByteArray(this).value());
+    return new String(
+      new ByteArray(this)
+        .value()
+    );
   }
 }

@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class SmartJsonTest {
+/**
+ * Test case for {@link Jocument}.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
+ */
+final class JocumentTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -50,7 +55,7 @@ final class SmartJsonTest {
   @BeforeEach
   void setUp() throws URISyntaxException {
     this.deep = Paths.get(
-      SmartJsonTest.class.getClassLoader()
+      JocumentTest.class.getClassLoader()
         .getResource("deep.json")
         .toURI()
     );
@@ -60,7 +65,7 @@ final class SmartJsonTest {
   void readsAsTextInRightFormat() {
     MatcherAssert.assertThat(
       "JSON as text in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -78,7 +83,7 @@ final class SmartJsonTest {
   void readsAsPrettyInRightFormat() {
     MatcherAssert.assertThat(
       "JSON as pretty text in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -103,7 +108,7 @@ final class SmartJsonTest {
     );
     MatcherAssert.assertThat(
       "Reads byte array",
-      new SmartJson(
+      new Jocument(
         new JsonOf(bytes)
       ).byteArray(),
       Matchers.equalTo(
@@ -119,7 +124,7 @@ final class SmartJsonTest {
       .put("field2", "value2");
     MatcherAssert.assertThat(
       "Reads Object Node",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           node
         )
@@ -132,7 +137,7 @@ final class SmartJsonTest {
   void readsAsLeaf() {
     MatcherAssert.assertThat(
       "Reads as JSON leaf",
-      new SmartJson(
+      new Jocument(
         new JsonOf(this.deep)
       ).at("/ocean/rock1/nereid2").leaf("hair"),
       Matchers.equalTo("red")
@@ -143,7 +148,7 @@ final class SmartJsonTest {
   void handlesMissingDataAtLeaf() {
     MatcherAssert.assertThat(
       "Handles missing data at leaf",
-      new SmartJson(
+      new Jocument(
         new JsonOf(this.deep)
       ).at("/ocean/nothing")
         .isMissing(),
@@ -155,7 +160,7 @@ final class SmartJsonTest {
   void readsLeafInArray() {
     MatcherAssert.assertThat(
       "Leaf in array in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(this.deep)
       ).at("/ocean/rock1/nereid1/associates/0")
         .leaf("name"),
@@ -167,7 +172,7 @@ final class SmartJsonTest {
   void readsArraysInRightFormat() {
     MatcherAssert.assertThat(
       "JSON in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           this.deep
         )
@@ -185,7 +190,7 @@ final class SmartJsonTest {
     final String array = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
     assertEquals(
       "Jason",
-      new SmartJson(
+      new Jocument(
         new JsonOf(this.deep)
       ).at("/ocean/rock1/nereid1/associates").at("/0").leaf("name")
     );
@@ -195,7 +200,7 @@ final class SmartJsonTest {
   void knowsIfMissing() {
     MatcherAssert.assertThat(
       "Missing in right format",
-      new SmartJson(new Missing()).isMissing(),
+      new Jocument(new Missing()).isMissing(),
       Matchers.equalTo(true)
     );
   }
@@ -204,7 +209,7 @@ final class SmartJsonTest {
   void knowsEmptyJsonIsNotMissing() {
     MatcherAssert.assertThat(
       "Empty JSON is not missing",
-      new SmartJson(
+      new Jocument(
         new JsonOf("{}")
       ).isMissing(),
       Matchers.equalTo(false)
@@ -216,7 +221,7 @@ final class SmartJsonTest {
     final String data = "test";
     MatcherAssert.assertThat(
       "Stringifies in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(data)
       ).toString(),
       Matchers.equalTo(data)
@@ -225,7 +230,7 @@ final class SmartJsonTest {
 
   @Test
   void readsTwice() {
-    final SmartJson json = new SmartJson(
+    final Jocument json = new Jocument(
       new JsonOf("{\"field1\":\"value1\",\"field2\":\"value2\"}")
     );
     MatcherAssert.assertThat(
@@ -244,7 +249,7 @@ final class SmartJsonTest {
   void findsOptLeaf() {
     assertEquals(
       "value2",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -258,7 +263,7 @@ final class SmartJsonTest {
   void leafsInRightFormat() {
     MatcherAssert.assertThat(
       "Leafs in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -273,7 +278,7 @@ final class SmartJsonTest {
   void returnsEmptyOnEmptyLeaf() {
     MatcherAssert.assertThat(
       "Returns False on empty leaf",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -288,7 +293,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -302,7 +307,7 @@ final class SmartJsonTest {
     final String field = "intField";
     MatcherAssert.assertThat(
       "Returns empty on leaf is not string",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -319,7 +324,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
               .put("field1", "value1")
@@ -334,7 +339,7 @@ final class SmartJsonTest {
   void returnsEmptyOnEmptyString() {
     MatcherAssert.assertThat(
       "Returns empty on empty string",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -349,7 +354,7 @@ final class SmartJsonTest {
   void findsOptLeafInPath() {
     assertEquals(
       "innerValue",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -367,7 +372,7 @@ final class SmartJsonTest {
   void findsLeafInPath() {
     assertEquals(
       "innerValue",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -384,7 +389,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentLeafInPath() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -397,7 +402,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -409,7 +414,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalIfLeafInPathIsNotString() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -428,7 +433,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
               .put("field1", "value1")
@@ -447,7 +452,7 @@ final class SmartJsonTest {
   void findsOptLeafAsInt() {
     assertEquals(
       14,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -461,7 +466,7 @@ final class SmartJsonTest {
   void findsLeafAsInt() {
     assertEquals(
       14,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -474,7 +479,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentIntLeaf() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -487,7 +492,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -500,7 +505,7 @@ final class SmartJsonTest {
   void returnsZeroIfOptLeafIsNotInt() {
     assertEquals(
       0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -514,7 +519,7 @@ final class SmartJsonTest {
   void returnsZeroIfLeafIsNotInt() {
     assertEquals(
       0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -528,7 +533,7 @@ final class SmartJsonTest {
   void returnsIntEvenIfOptLeafIsDouble() {
     assertEquals(
       5,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -542,7 +547,7 @@ final class SmartJsonTest {
   void returnsIntEvenIfLeafIsDouble() {
     assertEquals(
       5,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -556,7 +561,7 @@ final class SmartJsonTest {
   void findsOptIntLeafInPath() {
     assertEquals(
       999,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -574,7 +579,7 @@ final class SmartJsonTest {
   void findsLeafIntInPath() {
     assertEquals(
       12,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -591,7 +596,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentLeafIntInPath() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -604,7 +609,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -617,7 +622,7 @@ final class SmartJsonTest {
   void returnsZeroIfOptLeafInPathIsNotInt() {
     assertEquals(
       0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -635,7 +640,7 @@ final class SmartJsonTest {
   void returnsZeroIfLeafInPathIsNotInt() {
     assertEquals(
       0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -653,7 +658,7 @@ final class SmartJsonTest {
   void returnsIntEvenIfOptLeafInPathIsDouble() {
     assertEquals(
       5,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -671,7 +676,7 @@ final class SmartJsonTest {
   void findsOptLeafAsDouble() {
     assertEquals(
       14.9,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", 14.9)
@@ -685,7 +690,7 @@ final class SmartJsonTest {
   void findsLeafAsDouble() {
     assertEquals(
       14.9,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", 14.9)
@@ -698,7 +703,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentDoubleLeaf() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -711,7 +716,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -724,7 +729,7 @@ final class SmartJsonTest {
   void returnsZeroIfOptLeafIsNotDouble() {
     assertEquals(
       0.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -738,7 +743,7 @@ final class SmartJsonTest {
   void returnsZeroIfLeafIsNotDouble() {
     assertEquals(
       0.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -752,7 +757,7 @@ final class SmartJsonTest {
   void returnsDoubleEvenIfOptLeafIsInt() {
     assertEquals(
       5.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -766,7 +771,7 @@ final class SmartJsonTest {
   void returnsDoubleEvenIfLeafIsInt() {
     assertEquals(
       5.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -780,7 +785,7 @@ final class SmartJsonTest {
   void findsOptDoubleLeafInPath() {
     assertEquals(
       999.17,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -798,7 +803,7 @@ final class SmartJsonTest {
   void findsLeafDoubleInPath() {
     assertEquals(
       12.45,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -815,7 +820,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentLeafDoubleInPath() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -828,7 +833,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -841,7 +846,7 @@ final class SmartJsonTest {
   void returnsZeroIfOptLeafInPathIsNotDouble() {
     assertEquals(
       0.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -859,7 +864,7 @@ final class SmartJsonTest {
   void returnsZeroIfLeafInPathIsNotDouble() {
     assertEquals(
       0.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -877,7 +882,7 @@ final class SmartJsonTest {
   void returnsDoubleEvenIfOptLeafInPathIsInt() {
     assertEquals(
       5.0,
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -894,7 +899,7 @@ final class SmartJsonTest {
   @Test
   void findsOptLeafAsBool() {
     assertTrue(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -907,7 +912,7 @@ final class SmartJsonTest {
   @Test
   void findsLeafAsBool() {
     assertTrue(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -920,7 +925,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentBooleanLeaf() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -933,7 +938,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -945,7 +950,7 @@ final class SmartJsonTest {
   @Test
   void returnsFalseIfOptLeafIsNotBool() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -958,7 +963,7 @@ final class SmartJsonTest {
   @Test
   void returnsFalseIfLeafIsNotBool() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
@@ -971,7 +976,7 @@ final class SmartJsonTest {
   @Test
   void findsOptBoolLeafInPath() {
     assertTrue(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -988,7 +993,7 @@ final class SmartJsonTest {
   @Test
   void findsLeafBoolInPath() {
     assertTrue(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -1005,7 +1010,7 @@ final class SmartJsonTest {
   @Test
   void returnsEmptyOptionalForNonexistentLeafBoolInPath() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
@@ -1018,7 +1023,7 @@ final class SmartJsonTest {
     assertTrue(
       assertThrows(
         IllegalArgumentException.class,
-        () -> new SmartJson(
+        () -> new Jocument(
           new JsonOf(
             MAPPER.createObjectNode()
           )
@@ -1030,7 +1035,7 @@ final class SmartJsonTest {
   @Test
   void returnsFalseIfOptLeafInPathIsNotBool() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
@@ -1047,7 +1052,7 @@ final class SmartJsonTest {
   @Test
   void returnsFalseIfLeafInPathIsNotBool() {
     assertFalse(
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
