@@ -22,59 +22,53 @@
 
 package io.github.eocqrs.eokson;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import java.util.Optional;
 
 /**
- * Test case for {@link JsonEnvelope}.
+ * Evaluate JSON Node at a given path.
  *
  * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
- * @since 0.0.0
+ * @since 0.1.2
  */
-final class JsonEnvelopeTest {
+public final class NodeAt implements Scalar<Optional<JsonNode>> {
 
-  @Test
-  void bytesDoesNotThrowException() {
-    Assertions.assertDoesNotThrow(
-      () ->
-        new JsonEnvelopeTest.TestJsonEnvelope(
-          new JsonOf("{}")
-        ).bytes()
-    );
+  /**
+   * JSON path.
+   */
+  private final String path;
+  /**
+   * Jackson Node.
+   */
+  private final Unchecked<ObjectNode> jackson;
+
+  /**
+   * Ctor.
+   *
+   * @param pth     Path
+   * @param jackson Jackson Node
+   */
+  public NodeAt(
+    final String pth,
+    final Unchecked<ObjectNode> jackson
+  ) {
+    this.path = pth;
+    this.jackson = jackson;
   }
 
-  @Test
-  void bytesAreNotNull() {
-    MatcherAssert.assertThat(
-      "JSON bytes is not NULL",
-      new JsonEnvelopeTest.TestJsonEnvelope(
-        new JsonOf("{}")
-      ).bytes(),
-      Matchers.notNullValue()
-    );
-  }
-
-  @Test
-  void readsJsonWithEnvelopeInRightFormat() {
-    final String value = "{\"number\": \"12\"}";
-    MatcherAssert.assertThat(
-      "JSON in right format",
-      new JsonOf(value).toString(),
-      Matchers.equalTo(
-        new JsonEnvelopeTest.TestJsonEnvelope(
-          new JsonOf(
-            value
-          )
-        ).toString()
-      )
-    );
-  }
-
-  private static final class TestJsonEnvelope extends JsonEnvelope {
-    TestJsonEnvelope(final Json origin) {
-      super(origin);
+  @Override
+  public Optional<JsonNode> value() {
+    final JsonNode node;
+    if (!this.path.isEmpty() && this.path.charAt(0) == '/') {
+      node = this.jackson.value().at(this.path);
+    } else {
+      node = this.jackson.value().path(this.path);
     }
+    if (node.isMissingNode()) {
+      return Optional.empty();
+    }
+    return Optional.of(node);
   }
 }

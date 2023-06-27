@@ -22,59 +22,65 @@
 
 package io.github.eocqrs.eokson;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link JsonEnvelope}.
+ * Test case for {@link NodeAt}.
  *
  * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
- * @since 0.0.0
+ * @since 0.1.2
  */
-final class JsonEnvelopeTest {
+final class NodeAtTest {
 
   @Test
-  void bytesDoesNotThrowException() {
-    Assertions.assertDoesNotThrow(
-      () ->
-        new JsonEnvelopeTest.TestJsonEnvelope(
-          new JsonOf("{}")
-        ).bytes()
-    );
-  }
-
-  @Test
-  void bytesAreNotNull() {
+  void readsNodeInRightFormat() {
+    final String value = "John";
     MatcherAssert.assertThat(
-      "JSON bytes is not NULL",
-      new JsonEnvelopeTest.TestJsonEnvelope(
-        new JsonOf("{}")
-      ).bytes(),
-      Matchers.notNullValue()
+      "Node in right format",
+      new NodeAt(
+        "/name",
+        new Unchecked<>(
+          () -> new ObjectMapper()
+            .createObjectNode()
+            .put("name", value)
+        )
+      ).value().get().textValue(),
+      Matchers.equalTo(value)
     );
   }
 
   @Test
-  void readsJsonWithEnvelopeInRightFormat() {
-    final String value = "{\"number\": \"12\"}";
+  void checksNodeIsPresent() {
     MatcherAssert.assertThat(
-      "JSON in right format",
-      new JsonOf(value).toString(),
-      Matchers.equalTo(
-        new JsonEnvelopeTest.TestJsonEnvelope(
-          new JsonOf(
-            value
-          )
-        ).toString()
-      )
+      "Node is present",
+      new NodeAt(
+        "/exists",
+        new Unchecked<>(
+          () -> new ObjectMapper()
+            .createObjectNode()
+            .put("exists", "some-value")
+        )
+      ).value().isPresent(),
+      Matchers.equalTo(true)
     );
   }
 
-  private static final class TestJsonEnvelope extends JsonEnvelope {
-    TestJsonEnvelope(final Json origin) {
-      super(origin);
-    }
+  @Test
+  void checksNodeIsNotPresent() {
+    MatcherAssert.assertThat(
+      "Node is not present",
+      new NodeAt(
+        "/notexists",
+        new Unchecked<>(
+          () -> new ObjectMapper()
+            .createObjectNode()
+            .put("exists", "some-value")
+        )
+      ).value().isPresent(),
+      Matchers.equalTo(false)
+    );
   }
 }

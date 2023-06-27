@@ -22,26 +22,14 @@
 
 package io.github.eocqrs.eokson;
 
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Test;
-
 /**
- * Test case for {@link Empty}.
+ * Exception-Safe Scalar type.
  *
- * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
- * @since 0.0.0
+ * @param <T> Scalar type
+ * @author Aliaksei Bialiauski (abialaiuski.dev@gmail.com)
+ * @since 0.1.2
  */
-final class EmptyTest {
+interface Scalar<T> {
 
-  @Test
-  void readsEmptyJsonInRightFormat() {
-    MatcherAssert.assertThat(
-      "JSON in right format",
-      new JsonOf("{}").toString(),
-      Matchers.equalTo(
-        new Empty().toString()
-      )
-    );
-  }
+  T value();
 }

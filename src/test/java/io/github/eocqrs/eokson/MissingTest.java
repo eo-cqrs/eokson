@@ -27,6 +27,12 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test case for {@link Missing}.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
+ */
 final class MissingTest {
     @Test
     void creates() throws IOException {

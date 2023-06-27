@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
  * Test case for {@link ByteArray}.
  *
  * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
- * @since 0.3.5
+ * @since 0.1.1
  */
 final class ByteArrayTest {
 
@@ -19,7 +19,7 @@ final class ByteArrayTest {
     MatcherAssert.assertThat(
       "Bytes in right format",
       new ByteArray(
-        new SmartJson(
+        new Jocument(
           new JsonOf(bytes)
         )
       ).value(),

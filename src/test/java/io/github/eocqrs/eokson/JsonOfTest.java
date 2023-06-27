@@ -39,6 +39,12 @@ import java.nio.file.Paths;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Test case for {@link JsonOf}.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.1.1
+ */
 final class JsonOfTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();

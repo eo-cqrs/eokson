@@ -30,6 +30,12 @@ import org.junit.jupiter.api.Test;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+/**
+ * Test case for {@link MutableJson}.
+ *
+ * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
+ * @since 0.0.0
+ */
 final class MutableJsonTest {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -76,7 +82,7 @@ final class MutableJsonTest {
   void readJsonFromFileInRightFormat() throws URISyntaxException {
     MatcherAssert.assertThat(
       "JSON from file in right format",
-      new SmartJson(
+      new Jocument(
         new JsonOf(
           Paths.get(
             MutableJsonTest.class.getClassLoader().getResource(
@@ -86,7 +92,7 @@ final class MutableJsonTest {
         )
       ).pretty(),
       Matchers.equalTo(
-        new SmartJson(
+        new Jocument(
           new MutableJson().with(
             "ocean",
             new MutableJson().with(
