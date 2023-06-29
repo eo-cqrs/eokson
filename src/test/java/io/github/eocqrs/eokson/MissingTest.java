@@ -22,10 +22,13 @@
 
 package io.github.eocqrs.eokson;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for {@link Missing}.
@@ -34,11 +37,13 @@ import org.junit.jupiter.api.Test;
  * @since 0.0.0
  */
 final class MissingTest {
-    @Test
-    void creates() throws IOException {
-        assertEquals(
-            0,
-            new Missing().bytes().available()
-        );
-    }
+
+  @Test
+  void readsAvailableBytes() throws IOException {
+    MatcherAssert.assertThat(
+      "Zero bytes available",
+      new Missing().bytes().available(),
+      new IsEqual<>(0)
+    );
+  }
 }
