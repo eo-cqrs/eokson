@@ -181,6 +181,23 @@ final class JocumentTest {
     );
   }
 
+  @Test
+  void readsAmazon() throws URISyntaxException {
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new Jocument(
+        new JsonOf(
+          Paths.get(
+            JocumentTest.class.getClassLoader()
+              .getResource("amazon.json")
+              .toURI()
+          )
+        )
+      ).at("/amazon/shop/books/0").textual(),
+      Matchers.equalTo("{\"name\":\"Code Complete\",\"price\":30}")
+    );
+  }
+
   /*
   @todo #6:90m/DEV array leafing test doesn't work
    */

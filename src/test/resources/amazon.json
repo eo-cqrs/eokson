@@ -1,0 +1,16 @@
+{
+  "amazon": {
+    "shop": {
+      "books": [
+        {
+          "name": "Code Complete",
+          "price": 30
+        },
+        {
+          "name": "PMP exam prep.",
+          "price": 60
+        }
+      ]
+    }
+  }
+}

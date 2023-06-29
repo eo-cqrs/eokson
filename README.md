@@ -47,43 +47,88 @@ dependencies {
 
 ### Create new `Json` object
 
+you can create it from string:
 ```java
-// From String:
-String jsonAsString = "{\"nymph\": \"nereid\"}";
-Json json = new Json.Of(jsonAsString);
-
-// From InputStream:
-InputStream stream = new ByteArrayInputStream(jsonAsString.getBytes());
-json = new Json.Of(stream);
-
-// From Jackson's JsonNode:
-JsonNode node = new ObjectMapper().readTree(jsonAsString);
-json = new Json.Of(node);
+Json json = new JsonOf("{\"chair\": \"Herman Miller Aeron\"}");
 ```
 
-### SmartJson
+also, you can create JSON with Jackson's `JsonNode`:
+```java
+JsonNode node = new ObjectMapper().readTree("{\"chair\": \"Herman Miller Aeron\"}");
+json = new JsonOf(node);
+```
 
-Once we have the `Json` object, to use it in various ways,
-the [Smart Object pattern](https://www.yegor256.com/2016/04/26/why-inputstream-design-is-wrong.html) is employed.
+or with file:
+```java
+Json json = new JsonOf(path to file);
+```
+
+### Jocument, smart JSON document
+
+Textual representation:
+```java
+String textual = new Jocument(json).textual();
+```
+
+Pretty textual representation:
+```java
+String pretty = new Jocument(json).pretty();
+```
+
+Represent JSON as an array of bytes:
+````java
+byte[] bytes = new Jocument(json).byteArray();
+````
+
+```json
+{
+  "chair": "Herman Miller Aeron"
+}
+```
+
+Get JSON field value:
+````java
+String leaf = new Jocument(json).leaf("chair");
+````
+Output: Herman Miller Aeron.
+
+Get a nested JSON:
+
+```json
+{
+  "amazon": {
+    "shop": {
+        "books": [
+          {
+            "name": "Code Complete",
+            "price": 30
+          },
+          {
+            "name": "PMP exam prep.",
+            "price": 60
+          }
+        ]
+      }
+    }
+  }
+```
 
 ```java
-// Convert it to String:
-String textual = new SmartJson(json).textual();
+Jocument nested = Jocument(json).at("/amazon/shop/books/0");
+```
 
-// Convert it to pretty formatted String:
-String pretty = new SmartJson(json).pretty();
+The result will be:
+```json
+{
+  "name": "Code Complete",
+  "price": 30
+}
+```
 
-// Convert it to byte array:
-byte[] bytes = new SmartJson(json).byteArray();
-
-// Get a String field value:
-Optional<String> leaf = new SmartJson(json).leaf("nymph");
-
-// Get a deeply nested Json:
-SmartJson nested = new SmartJson(json).at("/path/to/nested/json");
-
-// Get a deeply nested int:
-int nestedInt = new SmartJson(json).at("/path/to/nested/int");
+Back to jackson-databind:
+```java
+ObjectNode node = new Jocument(json).objectNode();
+Json updated = new JsonOf(node);
 ```
 
 ### MutableJson
@@ -108,7 +153,7 @@ Json json = new MutableJson().with(
     )
   .with("stormy", true)
   );
-System.out.println(new SmartJson(json).pretty());
+System.out.println(new Jocument(json).pretty());
 ```
 
 The code above would print this:
@@ -129,27 +174,16 @@ The code above would print this:
 }
 ```
 
-### Custom implementations
+### Implementing Json
 
-If you have an object which needs to be able to display itself as JSON, sometimes it might be useful to just treat it as
-a JSON to begin with. In that case that object will have to implement a JSON interface. In most (all?) other libraries,
-JSON interfaces are huge, making it very difficult to implement them. With Nereides, all you need to do is provide the
-JSON representation in a stream of bytes. The easiest way to do this is to encapsulate another `Json` and delegate to
-it, or construct one on the spot.
-
-Let's say we have a bank account which we need to display as JSON. We need its IBAN, nickname and balance, which (to
-make this a less trivial example) we get from another service. One way to implement it is this:
+You can implement your own JSON model
+using [Json](https://github.com/eo-cqrs/eokson/blob/master/src/main/java/io/github/eocqrs/eokson/Json.java) interface:
 
 ```java
 public final class BankAccount implements Json {
   private final String iban;
   private final String nickname;
   private final TransactionHistory transactions;
-
-  // Constructor...
-
-  public void makePayment(double amount) { /* Implementation... */ }
-  // Other public methods...
 
   @Override
   public InputStream bytes() {
@@ -162,7 +196,8 @@ public final class BankAccount implements Json {
 }
 ```
 
-Even simpler way is to extend the `JsonEnvelope`, then you don't even need to implement `bytes()`:
+Or extending the
+[JsonEnvelope](https://github.com/eo-cqrs/eokson/blob/master/src/main/java/io/github/eocqrs/eokson/JsonEnvelope.java):
 
 ```java
 public final class BankAccount extends JsonEnvelope {
@@ -173,24 +208,23 @@ public final class BankAccount extends JsonEnvelope {
       .with("balance", transactions.balance(iban))
     );
   }
-
-  public void makePayment(double amount) { /* Implementation... */ }
-  // Other public methods...
 }
 ```
 
-We can then make an HTTP response directly, e.g. with [Spring](https://spring.io/):
+### Integration with RESTful APIs
+
+Here is the example of `eokson` usage with [Spring Framework](https://spring.io/):
 
 ```java         
 return new ResponseEntity<>(
-  new SmartJson(
+  new Jocument(
       new BankAccount(iban, nickname, transactions)
   ).byteArray(),
   HttpStatus.OK
 );
 ```
 
-...or with [Takes](https://github.com/yegor256/takes):
+and using [Takes](https://takes.org):
 
 ```java
 return new RsWithType(
@@ -204,30 +238,10 @@ return new RsWithType(
 );
 ```
 
-...or insert it in some JSON datastore:
+Also, you can insert it in some JSON datastore:
 
 ```java
 accounts.insert(new BankAccount(iban,nickname));
-```
-
-...or compose it within a larger JSON:
-
-```java
-Json accounts = new MutableJson()
-  .with("name","John")
-  .with("surname","Smith")
-  .with("account",new BankAccount(iban,nickname));
-```
-
-### Additional functionality
-
-If available functionality in the current version of Nereid is not enough, the developer can always fall back to
-jackson-databind. Convert `Json` to `ObjectNode`, do what you need with it, and construct a new `Json`.
-
-```java
-ObjectNode node = new SmartJson(json).objectNode();
-// Do stuff with node using Jackson's API.
-Json updated = new Json.Of(node);
 ```
 
 ## How to Contribute
