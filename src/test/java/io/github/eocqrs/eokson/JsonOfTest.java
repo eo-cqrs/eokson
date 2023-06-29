@@ -25,6 +25,8 @@ package io.github.eocqrs.eokson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -35,9 +37,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for {@link JsonOf}.
@@ -51,96 +50,121 @@ final class JsonOfTest {
 
   @Test
   void constructsFromBytes() throws JsonProcessingException {
-    byte[] bytes = MAPPER.writeValueAsBytes(
+    final byte[] bytes = MAPPER.writeValueAsBytes(
       MAPPER.createObjectNode()
         .put("field1", "value1")
         .put("field2", "value2")
     );
-    assertArrayEquals(
-      bytes,
-      new ByteArray(new JsonOf(bytes)).value()
+    MatcherAssert.assertThat(
+      "JSONs are equal by bytes",
+      new ByteArray(new JsonOf(bytes)).value(),
+      new IsEqual<>(bytes)
     );
   }
 
   @Test
   void constructsFromString() {
-    String string = "{\"number\": 12}";
-    assertArrayEquals(
-      string.getBytes(),
-      new ByteArray(new JsonOf(string)).value()
+    final String text = "{\"number\": 12}";
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(new JsonOf(text)).value(),
+      new IsEqual<>(text.getBytes())
     );
   }
 
   @Test
   void constructsFromInputStream() {
     final byte[] bytes = "{\"number\": 12}".getBytes();
-    assertArrayEquals(
-      bytes,
+    MatcherAssert.assertThat(
+      "JSON's bytes in right format",
       new ByteArray(
         new JsonOf(
           new ByteArrayInputStream(bytes)
         )
-      ).value()
+      ).value(),
+      new IsEqual<>(bytes)
     );
   }
 
   @Test
   void constructsFromJsonNode() throws JsonProcessingException {
-    JsonNode node = MAPPER.createObjectNode()
+    final JsonNode node = MAPPER.createObjectNode()
       .put("field1", "value1")
       .put("field2", "value2");
-    assertArrayEquals(
-      MAPPER.writeValueAsBytes(node),
-      new ByteArray(new JsonOf(node)).value()
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(new JsonOf(node)).value(),
+      new IsEqual<>(MAPPER.writeValueAsBytes(node))
     );
   }
 
   @Test
   void constructsFromFile() throws IOException, URISyntaxException {
-    Path path = Paths.get(
-      JsonOfTest.class.getClassLoader().getResource("deep.json").toURI()
+    final Path path = Paths.get(
+      JsonOfTest.class.getClassLoader()
+        .getResource("deep.json").toURI()
     );
-    assertArrayEquals(
-      Files.readAllBytes(path),
-      new ByteArray(new JsonOf(path)).value()
-    );
-  }
-
-  @Test
-  void understandsArrays() {
-    String string = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
-    assertArrayEquals(
-      string.getBytes(),
-      new ByteArray(new JsonOf(string)).value()
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(
+        new JsonOf(path)
+      ).value(),
+      new IsEqual<>(Files.readAllBytes(path))
     );
   }
 
   @Test
-  void toStringWorksEvenIfMalformed() {
-    assertEquals(
-      "malformed",
-      new JsonOf("malformed").toString()
+  void readsBytesOfJsonArray() {
+    final String json = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(new JsonOf(json)).value(),
+      new IsEqual<>(json.getBytes())
     );
   }
 
   @Test
-  void canReadTwice() {
-    String string = "{\"number\": 12}";
-    Json json = new JsonOf(string);
-    assertArrayEquals(string.getBytes(), new ByteArray(json).value());
-    assertArrayEquals(string.getBytes(), new ByteArray(json).value());
+  void stringifiesMalformed() {
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new JsonOf("malformed").toString(),
+      new IsEqual<>("malformed")
+    );
   }
 
   @Test
-  void doesntReadFileEachTimeJsonIsAccessed() throws IOException {
-    String string = "{\"number\": 12}";
-    File file = File.createTempFile("whatever", "whatever");
-    try (PrintStream ps = new PrintStream(file)) {
-      ps.print(string);
+  void readsMultipleTimes() {
+    final String text = "{\"number\": 12}";
+    MatcherAssert.assertThat(
+      "JSON can be read multiple times",
+      new ByteArray(new JsonOf(text)).value(),
+      new IsEqual<>(text.getBytes())
+    );
+    MatcherAssert.assertThat(
+      "JSON can be read multiple times",
+      new ByteArray(new JsonOf(text)).value(),
+      new IsEqual<>(text.getBytes())
+    );
+  }
+
+  @Test
+  void cachesFile() throws IOException {
+    final String text = "{\"number\": 12}";
+    final File file = File.createTempFile("whatever", "whatever");
+    try (final PrintStream ps = new PrintStream(file)) {
+      ps.print(text);
     }
-    Json json = new JsonOf(file.toPath());
-    assertArrayEquals(string.getBytes(), new ByteArray(json).value());
+    final Json json = new JsonOf(file.toPath());
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(json).value(),
+      new IsEqual<>(text.getBytes())
+    );
     file.delete();
-    assertArrayEquals(string.getBytes(), new ByteArray(json).value());
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new ByteArray(json).value(),
+      new IsEqual<>(text.getBytes())
+    );
   }
 }
