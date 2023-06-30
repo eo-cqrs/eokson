@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.function.Consumer;
 
 /**
  * JSON, which is mutable and can be used to build custom JSONs, e.g.
