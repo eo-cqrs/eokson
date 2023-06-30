@@ -25,10 +25,12 @@ package io.github.eocqrs.eokson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Test case for {@link MutableJson}.
@@ -152,6 +154,45 @@ final class MutableJsonTest {
       "Empty JSON in right format",
       new MutableJson().toString(),
       Matchers.equalTo("{}")
+    );
+  }
+
+  @Test
+  void createsBooks() throws URISyntaxException {
+    MatcherAssert.assertThat(
+      "JSON in right format",
+      new Jocument(
+        new MutableJson()
+          .with(
+            "amazon", new MutableJson()
+              .with(
+                "shop",
+                new MutableJson()
+                  .with(
+                    "books",
+                    List.of(
+                      new MutableJson()
+                        .with("name", "Code Complete")
+                        .with("price", 30),
+                      new MutableJson()
+                        .with("name", "PMP exam prep.")
+                        .with("price", 60)
+                    )
+                  )
+              )
+          )
+      ).pretty(),
+      new IsEqual<>(
+        new Jocument(
+          new JsonOf(
+            Paths.get(
+              JocumentTest.class.getClassLoader()
+                .getResource("amazon.json")
+                .toURI()
+            )
+          )
+        ).pretty()
+      )
     );
   }
 }

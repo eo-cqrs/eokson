@@ -23,9 +23,12 @@
 package io.github.eocqrs.eokson;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * JSON, which is mutable and can be used to build custom JSONs, e.g.
@@ -138,6 +141,26 @@ public final class MutableJson implements Json {
    */
   public MutableJson with(final String name, final Json value) {
     this.base.set(name, new Jocument(value).objectNode());
+    return this;
+  }
+
+  /**
+   * Add a JSON Array into the current JSON.
+   *
+   * @param name  Name of the field.
+   * @param jsons JSON array.
+   * @return This JSON.
+   */
+  public MutableJson with(
+    final String name,
+    final Collection<MutableJson> jsons
+  ) {
+    final ArrayNode node = MAPPER.createArrayNode();
+    this.base.set(name, node);
+    jsons.forEach(
+      json ->
+        node.add(new Jocument(json).objectNode())
+    );
     return this;
   }
 
