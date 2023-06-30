@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -36,9 +38,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test case for {@link Jocument}.
@@ -264,15 +263,17 @@ final class JocumentTest {
 
   @Test
   void findsOptLeaf() {
-    assertEquals(
-      "value2",
+    final String leaf = "value2";
+    MatcherAssert.assertThat(
+      "Leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
-            .put("field2", "value2")
+            .put("field2", leaf)
         )
-      ).optLeaf("field2").get()
+      ).optLeaf("field2").get(),
+      new IsEqual<>(leaf)
     );
   }
 
@@ -307,8 +308,8 @@ final class JocumentTest {
 
   @Test
   void throwsOnNonexistentLeaf() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -338,8 +339,8 @@ final class JocumentTest {
   @Test
   void throwsOnLeafIsNotString() {
     final String field = "intField";
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -369,8 +370,8 @@ final class JocumentTest {
 
   @Test
   void findsOptLeafInPath() {
-    assertEquals(
-      "innerValue",
+    MatcherAssert.assertThat(
+      "Leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -381,14 +382,15 @@ final class JocumentTest {
                 .put("innerField", "innerValue")
             )
         )
-      ).optLeaf("/field2/innerField").get()
+      ).optLeaf("/field2/innerField").get(),
+      new IsEqual<>("innerValue")
     );
   }
 
   @Test
   void findsLeafInPath() {
-    assertEquals(
-      "innerValue",
+    MatcherAssert.assertThat(
+      "Leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -399,25 +401,30 @@ final class JocumentTest {
                 .put("innerField", "innerValue")
             )
         )
-      ).leaf("/field2/innerField")
+      ).leaf("/field2/innerField"),
+      new IsEqual<>(
+        "innerValue"
+      )
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentLeafInPath() {
-    assertFalse(
+  void returnsEmptyOnNonexistentLeafInPath() {
+    MatcherAssert.assertThat(
+      "Empty optional on non existing",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeaf("/nonexistent/path").isPresent()
+      ).optLeaf("/nonexistent/path").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
-  void throwsForNonexistentLeafInPath() {
-    assertTrue(
-      assertThrows(
+  void throwsOnNonexistentLeafInPath() {
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -429,8 +436,9 @@ final class JocumentTest {
   }
 
   @Test
-  void returnsEmptyOptionalIfLeafInPathIsNotString() {
-    assertFalse(
+  void returnsEmptyOnNonTextLeaf() {
+    MatcherAssert.assertThat(
+      "Empty optional on non text leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -441,14 +449,15 @@ final class JocumentTest {
                 .put("innerField", 7)
             )
         )
-      ).optLeaf("/field2/innerField").isPresent()
+      ).optLeaf("/field2/innerField").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
-  void throwsIfLeafInPathIsNotString() {
-    assertTrue(
-      assertThrows(
+  void throwsOnNonTextLeaf() {
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -466,48 +475,54 @@ final class JocumentTest {
   }
 
   @Test
-  void findsOptLeafAsInt() {
-    assertEquals(
-      14,
+  void findsOptIntLeaf() {
+    final int value = 14;
+    MatcherAssert.assertThat(
+      "Int leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
-            .put("field2", 14)
+            .put("field2", value)
         )
-      ).optLeafAsInt("field2").get().intValue()
+      ).optLeafAsInt("field2").get().intValue(),
+      new IsEqual<>(value)
     );
   }
 
   @Test
-  void findsLeafAsInt() {
-    assertEquals(
-      14,
+  void findsIntLeaf() {
+    final int value = 14;
+    MatcherAssert.assertThat(
+      "Int leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
-            .put("field2", 14)
+            .put("field2", value)
         )
-      ).leafAsInt("field2")
+      ).leafAsInt("field2"),
+      new IsEqual<>(value)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentIntLeaf() {
-    assertFalse(
+  void returnsEmptyOnNonexistentIntLeaf() {
+    MatcherAssert.assertThat(
+      "Empty on non existing",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsInt("nonexistent").isPresent()
+      ).optLeafAsInt("nonexistent").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentIntLeaf() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -519,65 +534,70 @@ final class JocumentTest {
   }
 
   @Test
-  void returnsZeroIfOptLeafIsNotInt() {
-    assertEquals(
-      0,
+  void returnsZeroOnOptNonIntLeaf() {
+    MatcherAssert.assertThat(
+      "Returns zero on non int leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("intField", 5)
         )
-      ).optLeafAsInt("stringField").get().intValue()
+      ).optLeafAsInt("stringField").get().intValue(),
+      new IsEqual<>(0)
     );
   }
 
   @Test
-  void returnsZeroIfLeafIsNotInt() {
-    assertEquals(
-      0,
+  void returnsZeroOnNonIntLeaf() {
+    MatcherAssert.assertThat(
+      "Returns zero on non int leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("intField", 5)
         )
-      ).leafAsInt("stringField")
+      ).leafAsInt("stringField"),
+      new IsEqual<>(0)
     );
   }
 
   @Test
-  void returnsIntEvenIfOptLeafIsDouble() {
-    assertEquals(
-      5,
+  void returnsIntOnOptDoubleLeaf() {
+    MatcherAssert.assertThat(
+      "Returns int on optional double leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("doubleField", 5.9)
         )
-      ).optLeafAsInt("doubleField").get().intValue()
+      ).optLeafAsInt("doubleField").get().intValue(),
+      new IsEqual<>(5)
     );
   }
 
   @Test
-  void returnsIntEvenIfLeafIsDouble() {
-    assertEquals(
-      5,
+  void returnsIntOnDoubleLeaf() {
+    MatcherAssert.assertThat(
+      "Returns int on double leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("doubleField", 5.9)
         )
-      ).leafAsInt("doubleField")
+      ).leafAsInt("doubleField"),
+      new IsEqual<>(5)
     );
   }
 
   @Test
   void findsOptIntLeafInPath() {
-    assertEquals(
-      999,
+    final int value = 999;
+    MatcherAssert.assertThat(
+      "Int leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -585,17 +605,19 @@ final class JocumentTest {
             .<ObjectNode>set(
               "field2",
               MAPPER.createObjectNode()
-                .put("innerField", 999)
+                .put("innerField", value)
             )
         )
-      ).optLeafAsInt("/field2/innerField").get().intValue()
+      ).optLeafAsInt("/field2/innerField").get().intValue(),
+      new IsEqual<>(value)
     );
   }
 
   @Test
   void findsLeafIntInPath() {
-    assertEquals(
-      12,
+    final int value = 12;
+    MatcherAssert.assertThat(
+      "Int leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -603,28 +625,31 @@ final class JocumentTest {
             .<ObjectNode>set(
               "field2",
               MAPPER.createObjectNode()
-                .put("innerField", 12)
+                .put("innerField", value)
             )
         )
-      ).leafAsInt("/field2/innerField")
+      ).leafAsInt("/field2/innerField"),
+      new IsEqual<>(value)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentLeafIntInPath() {
-    assertFalse(
+  void returnsEmptyOnNonexistentIntLeafInPath() {
+    MatcherAssert.assertThat(
+      "Empty on non existing Int Leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsInt("/nonexistent/path").isPresent()
+      ).optLeafAsInt("/nonexistent/path").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentLeafIntInPath() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -636,9 +661,9 @@ final class JocumentTest {
   }
 
   @Test
-  void returnsZeroIfOptLeafInPathIsNotInt() {
-    assertEquals(
-      0,
+  void returnsZeroOnOptLeafInPathIsNotInt() {
+    MatcherAssert.assertThat(
+      "Returns zero on optional non int leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -649,14 +674,15 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).optLeafAsInt("/field2/innerField").get().intValue()
+      ).optLeafAsInt("/field2/innerField").get().intValue(),
+      new IsEqual<>(0)
     );
   }
 
   @Test
-  void returnsZeroIfLeafInPathIsNotInt() {
-    assertEquals(
-      0,
+  void returnsZeroOnNonIntLeafInPath() {
+    MatcherAssert.assertThat(
+      "Returns zero on non int leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -667,14 +693,15 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).leafAsInt("/field2/innerField")
+      ).leafAsInt("/field2/innerField"),
+      new IsEqual<>(0)
     );
   }
 
   @Test
-  void returnsIntEvenIfOptLeafInPathIsDouble() {
-    assertEquals(
-      5,
+  void returnsIntOnOptLeafInPathIsDouble() {
+    MatcherAssert.assertThat(
+      "Returns Int on optional leaf in path as double",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -685,53 +712,60 @@ final class JocumentTest {
                 .put("innerField", 5.9)
             )
         )
-      ).optLeafAsInt("/field2/innerField").get().intValue()
+      ).optLeafAsInt("/field2/innerField").get().intValue(),
+      new IsEqual<>(5)
     );
   }
 
   @Test
   void findsOptLeafAsDouble() {
-    assertEquals(
-      14.9,
+    final double value = 14.9;
+    MatcherAssert.assertThat(
+      "Optional leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
-            .put("field1", 14.9)
+            .put("field1", value)
             .put("field2", "value2")
         )
-      ).optLeafAsDouble("field1").get().doubleValue()
+      ).optLeafAsDouble("field1").get().doubleValue(),
+      new IsEqual<>(value)
     );
   }
 
   @Test
   void findsLeafAsDouble() {
-    assertEquals(
-      14.9,
+    final double value = 14.9;
+    MatcherAssert.assertThat(
+      "Double leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
-            .put("field1", 14.9)
+            .put("field1", value)
             .put("field2", "value2")
         )
-      ).leafAsDouble("field1")
+      ).leafAsDouble("field1"),
+      new IsEqual<>(value)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentDoubleLeaf() {
-    assertFalse(
+  void returnsEmptyOnNonexistentDoubleLeaf() {
+    MatcherAssert.assertThat(
+      "Empty on non existing double leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsDouble("nonexistent").isPresent()
+      ).optLeafAsDouble("nonexistent").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentDoubleLeaf() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -744,64 +778,69 @@ final class JocumentTest {
 
   @Test
   void returnsZeroIfOptLeafIsNotDouble() {
-    assertEquals(
-      0.0,
+    MatcherAssert.assertThat(
+      "Returns Zero on optional non double leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("doubleField", 5.9)
         )
-      ).optLeafAsDouble("stringField").get().doubleValue()
+      ).optLeafAsDouble("stringField").get().doubleValue(),
+      new IsEqual<>(0.0)
     );
   }
 
   @Test
   void returnsZeroIfLeafIsNotDouble() {
-    assertEquals(
-      0.0,
+    MatcherAssert.assertThat(
+      "Returns zero on non double leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("doubleField", 5.9)
         )
-      ).leafAsDouble("stringField")
+      ).leafAsDouble("stringField"),
+      new IsEqual<>(0.0)
     );
   }
 
   @Test
-  void returnsDoubleEvenIfOptLeafIsInt() {
-    assertEquals(
-      5.0,
+  void returnsDoubleIfOptLeafIsInt() {
+    MatcherAssert.assertThat(
+      "Returns optional double on int leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("intField", 5)
         )
-      ).optLeafAsDouble("intField").get().doubleValue()
+      ).optLeafAsDouble("intField").get().doubleValue(),
+      new IsEqual<>(5.0)
     );
   }
 
   @Test
-  void returnsDoubleEvenIfLeafIsInt() {
-    assertEquals(
-      5.0,
+  void returnsDoubleOnIfLeafIsInt() {
+    MatcherAssert.assertThat(
+      "Returns double on int leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("intField", 5)
         )
-      ).leafAsDouble("intField")
+      ).leafAsDouble("intField"),
+      new IsEqual<>(5.0)
     );
   }
 
   @Test
   void findsOptDoubleLeafInPath() {
-    assertEquals(
-      999.17,
+    final double value = 999.17;
+    MatcherAssert.assertThat(
+      "Double leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -809,17 +848,19 @@ final class JocumentTest {
             .<ObjectNode>set(
               "field2",
               MAPPER.createObjectNode()
-                .put("innerField", 999.17)
+                .put("innerField", value)
             )
         )
-      ).optLeafAsDouble("/field2/innerField").get().doubleValue()
+      ).optLeafAsDouble("/field2/innerField").get().doubleValue(),
+      new IsEqual<>(value)
     );
   }
 
   @Test
   void findsLeafDoubleInPath() {
-    assertEquals(
-      12.45,
+    final double value = 12.45;
+    MatcherAssert.assertThat(
+      "Double leaf in path in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -827,28 +868,31 @@ final class JocumentTest {
             .<ObjectNode>set(
               "field2",
               MAPPER.createObjectNode()
-                .put("innerField", 12.45)
+                .put("innerField", value)
             )
         )
-      ).leafAsDouble("/field2/innerField")
+      ).leafAsDouble("/field2/innerField"),
+      new IsEqual<>(value)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentLeafDoubleInPath() {
-    assertFalse(
+  void returnsEmptyOnNonexistentLeafDoubleInPath() {
+    MatcherAssert.assertThat(
+      "Empty on non existing leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsDouble("/nonexistent/path").isPresent()
+      ).optLeafAsDouble("/nonexistent/path").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentLeafDoubleInPath() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -860,9 +904,9 @@ final class JocumentTest {
   }
 
   @Test
-  void returnsZeroIfOptLeafInPathIsNotDouble() {
-    assertEquals(
-      0.0,
+  void returnsZeroOnOptLeafInPathIsNotDouble() {
+    MatcherAssert.assertThat(
+      "Returns zero on optional non double leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -873,14 +917,15 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).optLeafAsDouble("/field2/innerField").get().doubleValue()
+      ).optLeafAsDouble("/field2/innerField").get().doubleValue(),
+      new IsEqual<>(0.0)
     );
   }
 
   @Test
-  void returnsZeroIfLeafInPathIsNotDouble() {
-    assertEquals(
-      0.0,
+  void returnsZeroOnLeafInPathIsNotDouble() {
+    MatcherAssert.assertThat(
+      "Returns zero on non double leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -891,14 +936,15 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).leafAsDouble("/field2/innerField")
+      ).leafAsDouble("/field2/innerField"),
+      new IsEqual<>(0.0)
     );
   }
 
   @Test
-  void returnsDoubleEvenIfOptLeafInPathIsInt() {
-    assertEquals(
-      5.0,
+  void returnsDoubleOnOptLeafInPathIsInt() {
+    MatcherAssert.assertThat(
+      "Returns double on int leaf in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -909,51 +955,59 @@ final class JocumentTest {
                 .put("innerField", 5)
             )
         )
-      ).optLeafAsDouble("/field2/innerField").get().doubleValue()
+      ).optLeafAsDouble("/field2/innerField").get().doubleValue(),
+      new IsEqual<>(5.0)
     );
   }
 
   @Test
   void findsOptLeafAsBool() {
-    assertTrue(
+    MatcherAssert.assertThat(
+      "Boolean leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
             .put("field2", true)
         )
-      ).optLeafAsBool("field2").get()
+      ).optLeafAsBool("field2").get(),
+      new IsEqual<>(true)
     );
   }
 
   @Test
   void findsLeafAsBool() {
-    assertTrue(
+    final String field = "field2";
+    MatcherAssert.assertThat(
+      "Boolean leaf in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("field1", "value1")
-            .put("field2", true)
+            .put(field, true)
         )
-      ).leafAsBool("field2")
+      ).leafAsBool(field),
+      new IsEqual<>(true)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentBooleanLeaf() {
-    assertFalse(
+  void returnsEmptyOnNonexistentBooleanLeaf() {
+    MatcherAssert.assertThat(
+      "Empty on non existing boolean leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsBool("nonexistent").isPresent()
+      ).optLeafAsBool("nonexistent").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentBooleanLeaf() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -965,34 +1019,39 @@ final class JocumentTest {
   }
 
   @Test
-  void returnsFalseIfOptLeafIsNotBool() {
-    assertFalse(
+  void returnsFalseOnOptLeafIsNotBool() {
+    MatcherAssert.assertThat(
+      "False on non boolean leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("boolField", true)
         )
-      ).optLeafAsBool("stringField").get()
+      ).optLeafAsBool("stringField").get(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
-  void returnsFalseIfLeafIsNotBool() {
-    assertFalse(
+  void returnsFalseOnLeafIsNotBool() {
+    MatcherAssert.assertThat(
+      "False on non boolean leaf",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
             .put("stringField", "value1")
             .put("boolField", true)
         )
-      ).leafAsBool("stringField")
+      ).leafAsBool("stringField"),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void findsOptBoolLeafInPath() {
-    assertTrue(
+    MatcherAssert.assertThat(
+      "Boolean leaf in path in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -1003,13 +1062,15 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).optLeafAsBool("/field2/innerField").get()
+      ).optLeafAsBool("/field2/innerField").get(),
+      new IsEqual<>(true)
     );
   }
 
   @Test
   void findsLeafBoolInPath() {
-    assertTrue(
+    MatcherAssert.assertThat(
+      "Boolean leaf in path in right format",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -1020,25 +1081,28 @@ final class JocumentTest {
                 .put("innerField", true)
             )
         )
-      ).leafAsBool("/field2/innerField")
+      ).leafAsBool("/field2/innerField"),
+      new IsEqual<>(true)
     );
   }
 
   @Test
-  void returnsEmptyOptionalForNonexistentLeafBoolInPath() {
-    assertFalse(
+  void returnsEmptyOnNonexistentLeafBoolInPath() {
+    MatcherAssert.assertThat(
+      "Empty on non existing boolean in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
         )
-      ).optLeafAsBool("/nonexistent/path").isPresent()
+      ).optLeafAsBool("/nonexistent/path").isPresent(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void throwsForNonexistentLeafBoolInPath() {
-    assertTrue(
-      assertThrows(
+    Assertions.assertTrue(
+      Assertions.assertThrows(
         IllegalArgumentException.class,
         () -> new Jocument(
           new JsonOf(
@@ -1051,7 +1115,8 @@ final class JocumentTest {
 
   @Test
   void returnsFalseIfOptLeafInPathIsNotBool() {
-    assertFalse(
+    MatcherAssert.assertThat(
+      "False on leaf is not boolean in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -1062,13 +1127,15 @@ final class JocumentTest {
                 .put("innerField", "string")
             )
         )
-      ).optLeafAsBool("/field2/innerField").get()
+      ).optLeafAsBool("/field2/innerField").get(),
+      new IsEqual<>(false)
     );
   }
 
   @Test
   void returnsFalseIfLeafInPathIsNotBool() {
-    assertFalse(
+    MatcherAssert.assertThat(
+      "False on leaf is not boolean in path",
       new Jocument(
         new JsonOf(
           MAPPER.createObjectNode()
@@ -1079,7 +1146,8 @@ final class JocumentTest {
                 .put("innerField", 17)
             )
         )
-      ).leafAsBool("/field2/innerField")
+      ).leafAsBool("/field2/innerField"),
+      new IsEqual<>(false)
     );
   }
 }
