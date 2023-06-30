@@ -174,6 +174,52 @@ The code above would print this:
 }
 ```
 
+Creating JSON with a nested array:
+
+```java
+new Jocument(
+  new MutableJson()
+        .with(
+          "amazon", new MutableJson()
+            .with(
+              "shop",
+              new MutableJson()
+                .with(
+                  "books",
+                  List.of(
+                    new MutableJson()
+                      .with("name", "Code Complete")
+                      .with("price", 30),
+                    new MutableJson()
+                      .with("name", "PMP exam prep.")
+                      .with("price", 60)
+                  )
+                )
+            )
+        )
+).pretty();
+```
+
+It will print you following JSON document:
+```json
+{
+  "amazon": {
+    "shop": {
+      "books": [
+        {
+          "name": "Code Complete",
+          "price": 30
+        },
+        {
+          "name": "PMP exam prep.",
+          "price": 60
+        }
+      ]
+    }
+  }
+}
+```
+
 ### Implementing Json
 
 You can implement your own JSON model
