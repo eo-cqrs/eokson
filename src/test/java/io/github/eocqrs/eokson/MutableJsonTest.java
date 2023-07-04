@@ -81,7 +81,7 @@ final class MutableJsonTest {
   }
 
   @Test
-  void readJsonFromFileInRightFormat() throws URISyntaxException {
+  void readsJsonFromFileInRightFormat() throws URISyntaxException {
     MatcherAssert.assertThat(
       "JSON from file in right format",
       new Jocument(
