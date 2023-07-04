@@ -233,19 +233,22 @@ SOFTWARE.
           </execution>
         </executions>
       </plugin>
-      <!--      @todo #6:20m/DEV enable sa-tan-->
-      <!--      <plugin>-->
-      <!--        <groupId>ru.l3r8y</groupId>-->
-      <!--        <artifactId>sa-tan</artifactId>-->
-      <!--        <version>${sa-tan.version}</version>-->
-      <!--        <executions>-->
-      <!--          <execution>-->
-      <!--            <goals>-->
-      <!--              <goal>search</goal>-->
-      <!--            </goals>-->
-      <!--          </execution>-->
-      <!--        </executions>-->
-      <!--      </plugin>-->
+      <plugin>
+        <groupId>ru.l3r8y</groupId>
+        <artifactId>sa-tan</artifactId>
+        <version>${sa-tan.version}</version>
+        <configuration>
+          <!-- @todo #10:15m/DEV failOnError set to true -->
+          <failOnError>false</failOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>search</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
