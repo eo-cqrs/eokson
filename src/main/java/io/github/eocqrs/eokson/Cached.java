@@ -22,6 +22,8 @@
 
 package io.github.eocqrs.eokson;
 
+import ru.l3r8y.annotations.Mutable;
+
 import java.util.function.Supplier;
 
 /**
@@ -29,6 +31,7 @@ import java.util.function.Supplier;
  *
  * @param <T> Cached type
  */
+@Mutable
 final class Cached<T> {
 
   /**

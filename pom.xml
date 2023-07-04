@@ -94,6 +94,11 @@ SOFTWARE.
       <version>${jackson-databind.version}</version>
     </dependency>
     <dependency>
+      <groupId>ru.l3r8y</groupId>
+      <artifactId>sa-tan</artifactId>
+      <version>${sa-tan.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <version>${junit-jupiter-api.version}</version>
@@ -237,10 +242,6 @@ SOFTWARE.
         <groupId>ru.l3r8y</groupId>
         <artifactId>sa-tan</artifactId>
         <version>${sa-tan.version}</version>
-        <configuration>
-          <!-- @todo #10:15m/DEV failOnError set to true -->
-          <failOnError>false</failOnError>
-        </configuration>
         <executions>
           <execution>
             <goals>
