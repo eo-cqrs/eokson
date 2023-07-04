@@ -30,14 +30,11 @@ import org.hamcrest.Matchers;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test case for {@link Jocument}.
@@ -197,18 +194,14 @@ final class JocumentTest {
     );
   }
 
-  /*
-  @todo #6:90m/DEV array leafing test doesn't work
-   */
-  @Disabled
   @Test
   void leafsArrays() {
-    final String array = "[{\"name\":\"Jason\"},{\"name\":\"Thetis\"}]";
-    assertEquals(
-      "Jason",
+    MatcherAssert.assertThat(
+      "JSON in right format",
       new Jocument(
         new JsonOf(this.deep)
-      ).at("/ocean/rock1/nereid1/associates").at("/0").leaf("name")
+      ).at("/ocean/rock1/nereid1/associates/0").leaf("name"),
+      new IsEqual<>("Jason")
     );
   }
 
