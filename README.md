@@ -290,6 +290,49 @@ Also, you can insert it in some JSON datastore:
 accounts.insert(new BankAccount(iban,nickname));
 ```
 
+### JSON to XML
+
+You can easily transform JSON to XML using [JsonXML]():
+
+```json
+{
+  "test": "true",
+  "simple": "true",
+  "project": "eokson-0.3.2"
+}
+```
+
+```java
+final String xml = new JsonXML(new JsonOf(json), "test").asString();
+```
+
+here is XML output:
+
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<test>
+  <test>true</test>
+  <simple>true</simple>
+  <project>eokson-0.3.2</project>
+</test>
+```
+
+You can integrate it with [jcabi-xml](https://github.com/jcabi/jcabi-xml):
+
+```java
+import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XML;
+
+final XML xml = new XMLDocument(
+  new JsonXML(
+    new JsonOf(
+      json
+    ),
+    "test"
+  ).asString()
+);
+```
+
 ## How to Contribute
 
 Fork repository, make changes, send us a [pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
