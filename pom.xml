@@ -72,7 +72,7 @@ SOFTWARE.
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <jackson-databind.version>2.13.4.2</jackson-databind.version>
+    <jackson-databind.version>2.15.2</jackson-databind.version>
     <junit-jupiter-api.version>5.3.1</junit-jupiter-api.version>
     <junit-jupiter-engine.version>5.3.1</junit-jupiter-engine.version>
     <assert4j-core.version>3.24.2</assert4j-core.version>
@@ -91,6 +91,21 @@ SOFTWARE.
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson-databind.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
       <version>${jackson-databind.version}</version>
     </dependency>
     <dependency>
