@@ -22,50 +22,26 @@
 
 package io.github.eocqrs.eokson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cactoos.Text;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Test;
 
 /**
- * JSON in XML.
+ * Test case for {@link WithDeclaration}.
  *
  * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
  * @since 0.3.2
  */
-public final class JsonXML implements Text {
+final class WithDeclarationTest {
 
-  /**
-   * Json.
-   */
-  private final Json json;
-  /**
-   * Root XML node.
-   */
-  private final String root;
-
-  /**
-   * Ctor.
-   *
-   * @param jsn JSON
-   * @param rt  Root XML node
-   */
-  public JsonXML(final Json jsn, final String rt) {
-    this.json = jsn;
-    this.root = rt;
-  }
-
-  @Override
-  public String asString() throws Exception {
-    final ObjectMapper mapper = new ObjectMapper();
-    final JsonNode node = mapper.readTree(
-      new Jocument(
-        this.json
-      ).pretty()
+  @Test
+  void readsMapperInRightFormat() {
+    final XmlMapper mapper = new WithDeclaration().value();
+    MatcherAssert.assertThat(
+      "Mapper is present",
+      mapper,
+      Matchers.notNullValue()
     );
-    return new WithDeclaration()
-      .value()
-      .writer()
-      .withRootName(this.root)
-      .writeValueAsString(node);
   }
 }

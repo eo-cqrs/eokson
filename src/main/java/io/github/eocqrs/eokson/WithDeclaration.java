@@ -22,50 +22,21 @@
 
 package io.github.eocqrs.eokson;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cactoos.Text;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 /**
- * JSON in XML.
+ * XML Mapper With Declaration.
  *
  * @author Aliaksei Bialiauski (abialiauski.dev@gmail.com)
  * @since 0.3.2
  */
-public final class JsonXML implements Text {
-
-  /**
-   * Json.
-   */
-  private final Json json;
-  /**
-   * Root XML node.
-   */
-  private final String root;
-
-  /**
-   * Ctor.
-   *
-   * @param jsn JSON
-   * @param rt  Root XML node
-   */
-  public JsonXML(final Json jsn, final String rt) {
-    this.json = jsn;
-    this.root = rt;
-  }
+final class WithDeclaration implements Scalar<XmlMapper> {
 
   @Override
-  public String asString() throws Exception {
-    final ObjectMapper mapper = new ObjectMapper();
-    final JsonNode node = mapper.readTree(
-      new Jocument(
-        this.json
-      ).pretty()
-    );
-    return new WithDeclaration()
-      .value()
-      .writer()
-      .withRootName(this.root)
-      .writeValueAsString(node);
+  public XmlMapper value() {
+    final XmlMapper xml = new XmlMapper();
+    xml.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
+    return xml;
   }
 }
