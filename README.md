@@ -317,7 +317,7 @@ here is XML output:
 </test>
 ```
 
-You can integrate it with [jcabi-xml](https://github.com/jcabi/jcabi-xml):
+Also, you can integrate `eokson` with [jcabi-xml](https://github.com/jcabi/jcabi-xml):
 
 ```java
 import com.jcabi.xml.XMLDocument;
