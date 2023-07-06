@@ -292,7 +292,7 @@ accounts.insert(new BankAccount(iban,nickname));
 
 ### JSON to XML
 
-You can easily transform JSON to XML using [JsonXML]():
+You can easily transform JSON to XML using [JsonXML](https://github.com/eo-cqrs/eokson/blob/master/src/main/java/io/github/eocqrs/eokson/JsonXML.java):
 
 ```json
 {
