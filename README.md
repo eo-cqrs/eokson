@@ -303,18 +303,18 @@ You can easily transform JSON to XML using [JsonXML](https://github.com/eo-cqrs/
 ```
 
 ```java
-final String xml = new JsonXML(new JsonOf(json), "test").asString();
+final String xml = new JsonXML(new JsonOf(json), "root").asString();
 ```
 
 here is XML output:
 
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
-<test>
+<root>
   <test>true</test>
   <simple>true</simple>
   <project>eokson-0.3.2</project>
-</test>
+</root>
 ```
 
 Also, you can integrate `eokson` with [jcabi-xml](https://github.com/jcabi/jcabi-xml):
