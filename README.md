@@ -114,7 +114,7 @@ Get a nested JSON:
 ```
 
 ```java
-Jocument nested = Jocument(json).at("/amazon/shop/books/0");
+Jocument nested = new Jocument(json).at("/amazon/shop/books/0");
 ```
 
 The result will be:
